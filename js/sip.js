@@ -19,6 +19,16 @@ SIP.prototype.addListener = function(type, callback) {
 SIP.prototype.login = function() {
 	var self = this;
 	var registerSession = this.stack.newSession('register', {
+		sip_caps: [{
+			name: '+g.oma.sip-im',
+			value: null
+		}, {
+			name: '+audio',
+			value: null
+		}, {
+			name: 'language',
+			value: '\"en,fr\"'
+		}],
 		events_listener: {
 			events: '*',
 			listener: function(event) {
