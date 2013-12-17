@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html ng-app="SIPOptions">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet/less" type="text/css" href="less/options.less">
+<script type="text/javascript" src="js/lib/less.js"></script>
+<title>Chrome SIP Client Options</title>
+</head>
+<body>
+    <form ng-controller="SIPOptionsCtrl" ng-submit="submit()">
+        <button type="button" ng-click="grabMedia()">Check Media Permissions</button>
+        <fieldset>
+            <legend>Basic Options</legend>
+            <div>
+                <label for="realm">Realm:</label>
+                <input type="text" id="realm" name="realm" ng-model="options.realm">
+            </div>
+            <div>
+                <label for="impi">Private Identifier:</label>
+                <input type="text" id="impi" name="impi" ng-model="options.impi">
+            </div>
+            <div>
+                <label for="impu">Public Identifier:</label>
+                <input type="text" id="impu" name="impu" ng-model="options.impu">
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" ng-model="options.password">
+            </div>
+            <div>
+                <label for="display_name">Display Name:</label>
+                <input type="text" id="display_name" name="display_name" ng-model="options.display_name">
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Advanced Options</legend>
+            <div>
+                <label for="websocket_proxy_url">WebSocket Proxy:</label>
+                <input type="text" id="websocket_proxy_url" name="websocket_proxy_url" ng-model="options.websocket_proxy_url">
+            </div>
+            <div>
+                <label for="outbound_proxy_url">Outbound Proxy:</label>
+                <input type="text" id="outbound_proxy_url" name="outbound_proxy_url" ng-model="options.outbound_proxy_url">
+            </div>
+            <div>
+                <label for="enable_webrtc_breaker">WebRTC Breaker:</label>
+                <input type="checkbox" id="enable_webrtc_breaker" name="enable_webrtc_breaker" ng-model="options.enable_webrtc_breaker">
+            </div>
+            <div>
+                <label for="enable_early_ims">Enable Early IMS:</label>
+                <input type="checkbox" id="enable_early_ims" name="enable_early_ims" ng-model="options.enable_early_ims">
+            </div>
+            <div>
+                <label for="enable_media_stream_cache">Enable Media Stream Cache:</label>
+                <input type="checkbox" id="enable_media_stream_cache" name="enable_media_stream_cache" ng-model="options.enable_media_stream_cache">
+            </div>
+            <fieldset>
+                <legend>ICE Servers <button type="button" ng-click="addICEServer()">+</button>
+                </legend>
+                <div id="ice_list" ng-repeat="server in options.ice_servers">
+                    <input type="text" name="ice_servers_url" ng-model="server.url">
+                    <button type="button" ng-click="removeICEServer($index)">&times;</button>
+                </div>
+            </fieldset>
+        </fieldset>
+        <button type="submit">Save</button>
+    </form>
+    <script type="text/javascript" src="js/lib/jquery.js"></script>
+    <script type="text/javascript" src="js/lib/angular.js"></script>
+    <script type="text/javascript" src="js/options.js"></script>
+</body>
+</html>
