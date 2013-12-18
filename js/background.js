@@ -11,7 +11,7 @@ var options = {
 	websocket_proxy_url: null,
 	outbound_proxy_url: null,
 	ice_servers: [],
-	enable_webrtc_breaker: true,
+	enable_rtcweb_breaker: true,
 	enable_early_ims: true,
 	enable_media_stream_cache: false
 };

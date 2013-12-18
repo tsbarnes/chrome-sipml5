@@ -121,7 +121,7 @@ SIP.prototype.declineCall = function(event) {
 SIP.prototype.setOptions = function(options) {
 	var self = this;
 	if(!this.stack) {
-		this.stack = new SIPml.Stack($.extend({
+		var configuration = $.extend({
 			realm: 'sip2sip.info', // mandatory: domain name
 			impi: 'bob', // mandatory: authorization name (IMS Private Identity)
 			impu: 'sip:bob@example.org', // mandatory: valid SIP Uri (IMS Public Identity)
@@ -155,7 +155,9 @@ SIP.prototype.setOptions = function(options) {
 				name: 'User-Agent',
 				value: 'IM-client/OMA1.0 sipML5-v1.0.0.0'
 			}]
-		}, options));
+		}, options);
+		console.log(configuration);
+		this.stack = new SIPml.Stack(configuration);
 		this.stack.start();
 	} else {
 		this.stack.setConfiguration(options);
