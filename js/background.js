@@ -56,37 +56,41 @@ chrome.notifications.onClosed.addListener(function(notificationId, byUser) {
 	}
 });
 
-client.addListener('connected', function(event) {
-	console.log('Login event handler called');
-	chrome.notifications.create('', {
-		type: 'basic',
-		iconUrl: 'img/icon48.png',
-		title: 'SIP connected',
-		message: 'SIP client is now connected!',
-		eventTime: Date.now() + 500,
-		priority: -2
-	}, function(notificationId) {
-	});
+client.addListener('connected', function(type, event) {
+	if(type == 'login') {
+		console.log('Login event handler called');
+		chrome.notifications.create('', {
+			type: 'basic',
+			iconUrl: 'img/icon48.png',
+			title: 'SIP connected',
+			message: 'SIP client is now connected!',
+			eventTime: Date.now() + 500,
+			priority: -2
+		}, function(notificationId) {
+		});
+	}
 });
 
-client.addListener('i_new_call', function(event) {
-	chrome.notifications.create('sip_incoming_call', {
-		type: 'basic',
-		iconUrl: 'img/icon48.png',
-		title: 'Incoming call',
-		message: 'SIP call incoming',
-		isClickable: true,
-		priority: 2,
-		buttons: [{
-			title: 'Accept'
-		}, {
-			title: 'Decline'
-		}]
-	}, function(notificationId) {
-		currentCall = event.newSession;
-		notifySound.load();
-		notifySound.play();
-	});
+client.addListener('i_new_call', function(type, event) {
+	if(type == 'call') {
+		chrome.notifications.create('sip_incoming_call', {
+			type: 'basic',
+			iconUrl: 'img/icon48.png',
+			title: 'Incoming call',
+			message: 'SIP call incoming',
+			isClickable: true,
+			priority: 2,
+			buttons: [{
+				title: 'Accept'
+			}, {
+				title: 'Decline'
+			}]
+		}, function(notificationId) {
+			currentCall = event.newSession;
+			notifySound.load();
+			notifySound.play();
+		});
+	}
 });
 
 chrome.storage.local.get(options, function(items) {

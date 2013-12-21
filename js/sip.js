@@ -27,7 +27,7 @@ SIP.prototype.login = function() {
 			value: null
 		}, {
 			name: 'language',
-			value: '\"en,fr\"'
+			value: '\"en\"'
 		}],
 		events_listener: {
 			events: '*',
@@ -36,15 +36,64 @@ SIP.prototype.login = function() {
 				if(event.description) {
 					console.info(' ** ' + event.description + ' ** ');
 				}
+				if(event.type == 'connected') {
+					self.presence();
+				}
 				if(self.callbacks[event.type]) {
 					for(var loop = 0; loop < self.callbacks[event.type].length; loop++) {
-						self.callbacks[event.type][loop](event);
+						self.callbacks[event.type][loop]('login', event);
 					}
 				}
 			}
 		}
 	});
 	registerSession.register();
+};
+
+SIP.prototype.presence = function() {
+	var publishSession = this.stack.newSession('publish', {
+		events_listener: {
+			events: '*',
+			listener: function(event) {
+				console.info('presence session event = ' + event.type);
+				if(event.description) {
+					console.info(' ** ' + event.description + ' ** ');
+				}
+			}
+		}
+	});
+	var contentType = 'application/pidf+xml';
+	var content = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n';
+	content += '<presence xmlns=\"urn:ietf:params:xml:ns:pidf\"\n';
+	content += ' xmlns:im=\"urn:ietf:params:xml:ns:pidf:im\"';
+	content += ' entity=\"' + this.configuration.impu +'\">\n';
+	content += '<tuple id=\"s8794\">\n';
+	content += '<status>\n';
+	content += '   <basic>open</basic>\n';
+	content += '   <im:im>away</im:im>\n';
+	content += '</status>\n';
+	content += '</tuple>\n';
+	content += '</presence>';
+
+	// send the PUBLISH request
+	publishSession.publish(content, contentType, {
+		expires: 200,
+		sip_caps: [{
+			name: '+g.oma.sip-im'
+		}, {
+			name: '+sip.ice'
+		}, {
+			name: 'language',
+			value: '\"en\"'
+		}],
+		sip_headers: [{
+			name: 'Event',
+			value: 'presence'
+		}, {
+			name: 'Organization',
+			value: 'Doubango Telecom'
+		}]
+	});
 };
 
 SIP.prototype.sendMessage = function(toAddr, message) {
@@ -59,7 +108,7 @@ SIP.prototype.sendMessage = function(toAddr, message) {
 					}
 					if(self.callbacks[event.type]) {
 						for(var loop = 0; loop < self.callbacks[event.type].length; loop++) {
-							self.callbacks[event.type][loop](event);
+							self.callbacks[event.type][loop]('message', event);
 						}
 					}
 				}
@@ -81,7 +130,7 @@ SIP.prototype.call = function(toaddr) {
 				name: '+sip.ice'
 			}, {
 				name: 'language',
-				value: '\"en,fr\"'
+				value: '\"en\"'
 			}],
 			expires: 100,
 			events_listener: {
@@ -93,7 +142,7 @@ SIP.prototype.call = function(toaddr) {
 					}
 					if(self.callbacks[event.type]) {
 						for(var loop = 0; loop < self.callbacks[event.type].length; loop++) {
-							self.callbacks[event.type][loop](event);
+							self.callbacks[event.type][loop]('call', event);
 						}
 					}
 				}
@@ -120,47 +169,49 @@ SIP.prototype.declineCall = function(event) {
 
 SIP.prototype.setOptions = function(options) {
 	var self = this;
-	if(!this.stack) {
-		var configuration = $.extend({
-			realm: 'sip2sip.info', // mandatory: domain name
-			impi: 'bob', // mandatory: authorization name (IMS Private Identity)
-			impu: 'sip:bob@example.org', // mandatory: valid SIP Uri (IMS Public Identity)
-			password: null, // optional
-			display_name: null, // optional
-			websocket_proxy_url: null, // optional
-			outbound_proxy_url: null, // optional
-			ice_servers: null,
-			enable_rtcweb_breaker: false, // optional
-			enable_early_ims: true,
-			enable_media_stream_cache: false,
-			events_listener: {
-				events: '*',
-				listener: function(event) {
-					console.info('sip stack event = ' + event.type);
-					if(event.description) {
-						console.info(' ** ' + event.description + ' ** ');
-					}
-					if(event.type == 'started') {
-						self.login();
-					}
-					if(self.callbacks[event.type]) {
-						for(var loop = 0; loop < self.callbacks[event.type].length; loop++) {
-							self.callbacks[event.type][loop](event);
-						}
+	this.configuration = $.extend({
+		realm: 'sip2sip.info', // mandatory: domain name
+		impi: 'bob', // mandatory: authorization name (IMS Private
+		// Identity)
+		impu: 'sip:bob@example.org', // mandatory: valid SIP Uri (IMS
+		// Public Identity)
+		password: null, // optional
+		display_name: null, // optional
+		websocket_proxy_url: null, // optional
+		outbound_proxy_url: null, // optional
+		ice_servers: null,
+		enable_rtcweb_breaker: false, // optional
+		enable_early_ims: true,
+		enable_media_stream_cache: false,
+		events_listener: {
+			events: '*',
+			listener: function(event) {
+				console.info('sip stack event = ' + event.type);
+				if(event.description) {
+					console.info(' ** ' + event.description + ' ** ');
+				}
+				if(event.type == 'started') {
+					self.login();
+				}
+				if(self.callbacks[event.type]) {
+					for(var loop = 0; loop < self.callbacks[event.type].length; loop++) {
+						self.callbacks[event.type][loop]('stack', event);
 					}
 				}
-			}, // optional: '*' means all events
-			sip_headers: [ // optional
-			{
-				name: 'User-Agent',
-				value: 'IM-client/OMA1.0 sipML5-v1.0.0.0'
-			}]
-		}, options);
-		console.log(configuration);
-		this.stack = new SIPml.Stack(configuration);
+			}
+		}, // optional: '*' means all events
+		sip_headers: [ // optional
+		{
+			name: 'User-Agent',
+			value: 'IM-client/OMA1.0 sipML5-v1.0.0.0'
+		}]
+	}, options);
+	if(!this.stack) {
+		console.log(this.configuration);
+		this.stack = new SIPml.Stack(this.configuration);
 		this.stack.start();
 	} else {
-		this.stack.setConfiguration(options);
+		this.stack.setConfiguration(this.configuration);
 		this.restart();
 	}
 };
