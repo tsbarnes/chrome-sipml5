@@ -72,7 +72,7 @@ client.addListener('connected', function(type, event) {
 });
 
 client.addListener('i_new_call', function(type, event) {
-	if(type == 'call') {
+	if(type == 'stack') {
 		chrome.notifications.create('sip_incoming_call', {
 			type: 'basic',
 			iconUrl: 'img/icon48.png',
@@ -86,10 +86,10 @@ client.addListener('i_new_call', function(type, event) {
 				title: 'Decline'
 			}]
 		}, function(notificationId) {
-			currentCall = event.newSession;
-			notifySound.load();
-			notifySound.play();
 		});
+		currentCall = event.newSession;
+		notifySound.load();
+		notifySound.play();
 	}
 });
 
@@ -125,6 +125,18 @@ chrome.runtime.onConnect.addListener(function(port) {
 			} else if(message.type == 'hangup' && currentCall) {
 				console.log('Hanging up');
 				currentCall.hangup();
+				chrome.notifications.clear('sip_incoming_call', function(wasCleared) {
+					if(wasCleared) {
+						console.log('Call notification cleared');
+					}
+				});
+			} else if(message.type == 'answer' && currentCall) {
+				currentCall.accept();
+				chrome.notifications.clear('sip_incoming_call', function(wasCleared) {
+					if(wasCleared) {
+						console.log('Call notification cleared');
+					}
+				});
 			}
 		});
 	}

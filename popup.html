@@ -9,13 +9,16 @@
 </head>
 <body>
     <form>
-        <fieldset>
+        <fieldset id="new_call">
             <div>
                 <label for="toaddr">Call:</label>
                 <input type="text" id="toaddr" name="toaddr">
             </div>
+        	<button type="submit">Call</button>
         </fieldset>
-        <button type="submit">Call</button>
+        <fieldset id="incoming">
+        	<button type="button" id="answer">Answer</button>
+        </fieldset>
         <button type="button" id="hangup">Hang up</button>
     </form>
     <script type="text/javascript" src="js/lib/jquery.js"></script>

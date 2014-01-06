@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 
 var port = chrome.runtime.connect({
@@ -15,9 +15,17 @@ $('form').submit(function(event) {
   });
 });
 
+$('#answer').click(function(event) {
+  event.preventDefault();
+
+  port.postMessage({
+	type: 'answer'
+  });
+});
+
 $('#hangup').click(function(event) {
   event.preventDefault();
-  
+
   port.postMessage({
     type: 'hangup'
   });
