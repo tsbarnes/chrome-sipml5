@@ -17,16 +17,19 @@ var options = {
 };
 
 var client = new SIP();
-var currentCall;
 
 var notifySound = new Audio('wav/phone-ringing.wav');
 
-chrome.notifications.onButtonClicked.addListener(function(notificationId, buttonIndex) {
-	if(notificationId == 'sip_incoming_call' && currentCall) {
+chrome.notifications.onButtonClicked.addListener(function(notificationId,
+		buttonIndex) {
+	var notificationInfo = notificationId.split('/');
+	var type = notificationInfo[0];
+	var id = notificationInfo[1];
+	if(type == 'sip_incoming_call') {
 		if(buttonIndex == 0) {
-			currentCall.accept();
+			client.stack.ao_sessions[id].accept();
 		} else {
-			currentCall.reject();
+			client.stack.ao_sessions[id].reject();
 		}
 		chrome.notifications.clear(notificationId, function(wasCleared) {
 			if(wasCleared) {
@@ -37,8 +40,11 @@ chrome.notifications.onButtonClicked.addListener(function(notificationId, button
 });
 
 chrome.notifications.onClicked.addListener(function(notificationId) {
-	if(notificationId == 'sip_incoming_call' && currentCall) {
-		currentCall.accept();
+	var notificationInfo = notificationId.split('/');
+	var type = notificationInfo[0];
+	var id = notificationInfo[1];
+	if(type == 'sip_incoming_call') {
+		client.stack.ao_sessions[id].accept();
 		chrome.notifications.clear(notificationId, function(wasCleared) {
 			if(wasCleared) {
 				console.log('Call notification cleared');
@@ -48,9 +54,12 @@ chrome.notifications.onClicked.addListener(function(notificationId) {
 });
 
 chrome.notifications.onClosed.addListener(function(notificationId, byUser) {
-	if(notificationId == 'sip_incoming_call') {
-		if(currentCall && byUser == true) {
-			currentCall.reject();
+	var notificationInfo = notificationId.split('/');
+	var type = notificationInfo[0];
+	var id = notificationInfo[1];
+	if(type == 'sip_incoming_call') {
+		if(byUser == true) {
+			client.stack.ao_sessions[id].reject();
 		}
 		notifySound.stop();
 	}
@@ -73,7 +82,7 @@ client.addListener('connected', function(type, event) {
 
 client.addListener('i_new_call', function(type, event) {
 	if(type == 'stack') {
-		chrome.notifications.create('sip_incoming_call', {
+		chrome.notifications.create('sip_incoming_call/' + event.newSession.getId(), {
 			type: 'basic',
 			iconUrl: 'img/icon48.png',
 			title: 'Incoming call',
@@ -87,7 +96,6 @@ client.addListener('i_new_call', function(type, event) {
 			}]
 		}, function(notificationId) {
 		});
-		currentCall = event.newSession;
 		notifySound.load();
 		notifySound.play();
 	}
@@ -119,20 +127,34 @@ chrome.runtime.onConnect.addListener(function(port) {
 		});
 	} else if(port.name == 'popup') {
 		port.onMessage.addListener(function(message) {
-			if(message.type == 'call') {
+			if(message.type == 'calls') {
+				var response = {};
+				for( var id in client.stack.ao_sessions) {
+					if(client.stack.ao_sessions[id] != undefined) {
+						if(client.stack.ao_sessions[id].call != undefined) {
+							response[client.stack.ao_sessions[id].getId()] = {
+								'session': client.stack.ao_sessions[id].getId()
+							};
+						}
+					}
+				}
+				port.postMessage(response);
+			} else if(message.type == 'call') {
 				console.log('Calling ' + message.toaddr);
-				currentCall = client.call(message.toaddr);
-			} else if(message.type == 'hangup' && currentCall) {
+				client.call(message.toaddr);
+			} else if(message.type == 'hangup') {
 				console.log('Hanging up');
-				currentCall.hangup();
-				chrome.notifications.clear('sip_incoming_call', function(wasCleared) {
+				client.stack.ao_sessions[message.session].hangup();
+				chrome.notifications.clear('sip_incoming_call', function(
+						wasCleared) {
 					if(wasCleared) {
 						console.log('Call notification cleared');
 					}
 				});
-			} else if(message.type == 'answer' && currentCall) {
-				currentCall.accept();
-				chrome.notifications.clear('sip_incoming_call', function(wasCleared) {
+			} else if(message.type == 'answer') {
+				client.stack.ao_sessions[message.session].accept();
+				chrome.notifications.clear('sip_incoming_call', function(
+						wasCleared) {
 					if(wasCleared) {
 						console.log('Call notification cleared');
 					}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="SIPClient">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,20 +8,22 @@
 <title>Chrome SIP Client</title>
 </head>
 <body>
-    <form>
+    <form ng-controller="SIPClientCtrl" ng-submit="call()">
         <fieldset id="new_call">
             <div>
-                <label for="toaddr">Call:</label>
-                <input type="text" id="toaddr" name="toaddr">
+                <label for="toaddr">To:</label>
+                <input type="text" id="toaddr" name="toaddr" ng-model="toaddr">
             </div>
         	<button type="submit">Call</button>
         </fieldset>
-        <fieldset id="incoming">
-        	<button type="button" id="answer">Answer</button>
+        <fieldset ng-repeat="call in calls">
+        	<output>{{ call.session }}</output>
+        	<button type="button" ng-click="answer(call)">Answer</button>
+        	<button type="button" ng-click="hangup(call)">Hang up</button>
         </fieldset>
-        <button type="button" id="hangup">Hang up</button>
     </form>
     <script type="text/javascript" src="js/lib/jquery.js"></script>
+    <script type="text/javascript" src="js/lib/angular.js"></script>
     <script type="text/javascript" src="js/popup.js"></script>
 </body>
 </html>

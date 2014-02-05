@@ -2,31 +2,44 @@
  *
  */
 
-var port = chrome.runtime.connect({
-  name: 'popup'
-});
+function SIPClientCtrl($scope) {
+	$scope.port = chrome.runtime.connect({
+		name: 'popup'
+	});
+	$scope.toaddr = '';
+	$scope.calls = {};
 
-$('form').submit(function(event) {
-  event.preventDefault();
+	$scope.port.onMessage.addListener(function(message) {
+		for( var key in message) {
+			$scope.calls[key] = message[key];
+		}
+		$scope.$apply();
+	});
+	$scope.port.postMessage({
+		type: 'calls'
+	});
 
-  port.postMessage({
-    type: 'call',
-    toaddr: $('#toaddr').val()
-  });
-});
+	$scope.call = function() {
+		port.postMessage({
+			type: 'call',
+			toaddr: $scope.toaddr
+		});
+	};
 
-$('#answer').click(function(event) {
-  event.preventDefault();
+	$scope.answer = function(call) {
+		port.postMessage({
+			type: 'answer',
+			session: call.session
+		});
+	};
 
-  port.postMessage({
-	type: 'answer'
-  });
-});
+	$scope.hangup = function(call) {
+		port.postMessage({
+			type: 'hangup',
+			session: call.session
+		});
+	};
+}
 
-$('#hangup').click(function(event) {
-  event.preventDefault();
-
-  port.postMessage({
-    type: 'hangup'
-  });
-});
+var SIPClient = angular.module('SIPClient', []);
+SIPClient.controller('SIPClientCtrl', ['$scope', SIPClientCtrl]);
