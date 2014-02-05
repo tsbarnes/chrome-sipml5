@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 
 function SIP() {
@@ -51,6 +51,7 @@ SIP.prototype.login = function() {
 };
 
 SIP.prototype.presence = function() {
+	var self = this;
 	var publishSession = this.stack.newSession('publish', {
 		events_listener: {
 			events: '*',
@@ -97,6 +98,7 @@ SIP.prototype.presence = function() {
 };
 
 SIP.prototype.sendMessage = function(toAddr, message) {
+	var self = this;
 	if(!this.messageSession) {
 		this.messageSession = this.stack.newSession('message', {
 			events_listener: {
@@ -121,6 +123,7 @@ SIP.prototype.sendMessage = function(toAddr, message) {
 };
 
 SIP.prototype.call = function(toaddr) {
+	var self = this;
 	if(!this.callSession) {
 		this.callSession = this.stack.newSession('call-audio', {
 			audio_remote: document.getElementById('sip_output'),
