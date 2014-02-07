@@ -15,13 +15,10 @@ var options = {
 	enable_early_ims: true,
 	enable_media_stream_cache: false
 };
-
 var client = new SIP();
-
 var notifySound = new Audio('wav/phone-ringing.wav');
 
-chrome.notifications.onButtonClicked.addListener(function(notificationId,
-		buttonIndex) {
+chrome.notifications.onButtonClicked.addListener(function(notificationId, buttonIndex) {
 	var notificationInfo = notificationId.split('/');
 	var type = notificationInfo[0];
 	var id = notificationInfo[1];
@@ -145,16 +142,14 @@ chrome.runtime.onConnect.addListener(function(port) {
 			} else if(message.type == 'hangup') {
 				console.log('Hanging up');
 				client.stack.ao_sessions[message.session].hangup();
-				chrome.notifications.clear('sip_incoming_call', function(
-						wasCleared) {
+				chrome.notifications.clear('sip_incoming_call', function(wasCleared) {
 					if(wasCleared) {
 						console.log('Call notification cleared');
 					}
 				});
 			} else if(message.type == 'answer') {
 				client.stack.ao_sessions[message.session].accept();
-				chrome.notifications.clear('sip_incoming_call', function(
-						wasCleared) {
+				chrome.notifications.clear('sip_incoming_call', function(wasCleared) {
 					if(wasCleared) {
 						console.log('Call notification cleared');
 					}

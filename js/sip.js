@@ -67,7 +67,7 @@ SIP.prototype.presence = function() {
 	var content = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n';
 	content += '<presence xmlns=\"urn:ietf:params:xml:ns:pidf\"\n';
 	content += ' xmlns:im=\"urn:ietf:params:xml:ns:pidf:im\"';
-	content += ' entity=\"' + this.configuration.impu +'\">\n';
+	content += ' entity=\"' + this.configuration.impu + '\">\n';
 	content += '<tuple id=\"s8794\">\n';
 	content += '<status>\n';
 	content += '   <basic>open</basic>\n';
@@ -186,23 +186,6 @@ SIP.prototype.setOptions = function(options) {
 		enable_rtcweb_breaker: false, // optional
 		enable_early_ims: true,
 		enable_media_stream_cache: false,
-		events_listener: {
-			events: '*',
-			listener: function(event) {
-				console.info('sip stack event = ' + event.type);
-				if(event.description) {
-					console.info(' ** ' + event.description + ' ** ');
-				}
-				if(event.type == 'started') {
-					self.login();
-				}
-				if(self.callbacks[event.type]) {
-					for(var loop = 0; loop < self.callbacks[event.type].length; loop++) {
-						self.callbacks[event.type][loop]('stack', event);
-					}
-				}
-			}
-		}, // optional: '*' means all events
 		sip_headers: [ // optional
 		{
 			name: 'User-Agent',
@@ -212,10 +195,25 @@ SIP.prototype.setOptions = function(options) {
 	if(!this.stack) {
 		console.log(this.configuration);
 		this.stack = new SIPml.Stack(this.configuration);
+		this.stack.addEventListener('*', function(event) {
+			console.info('sip stack event = ' + event.type);
+			if(event.description) {
+				console.info(' ** ' + event.description + ' ** ');
+			}
+			if(event.type == 'started') {
+				self.login();
+			}
+			if(self.callbacks[event.type]) {
+				for(var loop = 0; loop < self.callbacks[event.type].length; loop++) {
+					self.callbacks[event.type][loop]('stack', event);
+				}
+			}
+		});
 		this.stack.start();
 	} else {
+		this.stack.stop();
 		this.stack.setConfiguration(this.configuration);
-		this.restart();
+		this.stack.start();
 	}
 };
 

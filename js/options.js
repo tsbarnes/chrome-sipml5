@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 
 function SIPOptionsCtrl($scope) {
@@ -38,14 +38,14 @@ function SIPOptionsCtrl($scope) {
 	};
 
 	$scope.addICEServer = function() {
-		if(!$scope.options.ice_servers || typeof($scope.options.ice_servers) != 'object') {
+		if(!$scope.options.ice_servers || typeof ($scope.options.ice_servers) != 'object') {
 			$scope.options.ice_servers = [];
 		}
 		$scope.options.ice_servers.push({
 			url: ''
 		});
 	};
-	
+
 	$scope.removeICEServer = function(index) {
 		$scope.options.ice_servers.splice(index, 1);
 	};
