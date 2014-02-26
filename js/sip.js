@@ -7,10 +7,12 @@ function SIP() {
 	this.callbacks = {};
 
 	document.write('<audio id="sip_output" autoplay="autoplay"></audio>');
+
+	SIPml.init();
 }
 
 SIP.prototype.addListener = function(type, callback) {
-	if(!this.callbacks[type]) {
+	if (!this.callbacks[type]) {
 		this.callbacks[type] = [];
 	}
 	this.callbacks[type].push(callback);
@@ -19,48 +21,47 @@ SIP.prototype.addListener = function(type, callback) {
 SIP.prototype.login = function() {
 	var self = this;
 	var registerSession = this.stack.newSession('register', {
-		sip_caps: [{
-			name: '+g.oma.sip-im',
-			value: null
-		}, {
-			name: '+audio',
-			value: null
-		}, {
-			name: 'language',
-			value: '\"en\"'
-		}],
-		events_listener: {
-			events: '*',
-			listener: function(event) {
-				console.info('register session event = ' + event.type);
-				if(event.description) {
-					console.info(' ** ' + event.description + ' ** ');
-				}
-				if(event.type == 'connected') {
-					self.presence();
-				}
-				if(self.callbacks[event.type]) {
-					for(var loop = 0; loop < self.callbacks[event.type].length; loop++) {
-						self.callbacks[event.type][loop]('login', event);
-					}
-				}
-			}
-		}
+	    sip_caps : [ {
+	        name : '+g.oma.sip-im',
+	        value : null
+	    }, {
+	        name : '+audio',
+	        value : null
+	    }, {
+	        name : 'language',
+	        value : '\"en\"'
+	    } ],
+	    events_listener : {
+	        events : '*',
+	        listener : function(event) {
+		        console.info('register session event = ' + event.type);
+		        if (event.description) {
+			        console.info(' ** ' + event.description + ' ** ');
+		        }
+		        if (event.type == 'connected') {
+			        self.presence();
+		        }
+		        if (self.callbacks[event.type]) {
+			        for (var loop = 0; loop < self.callbacks[event.type].length; loop++) {
+				        self.callbacks[event.type][loop]('login', event);
+			        }
+		        }
+	        }
+	    }
 	});
 	registerSession.register();
 };
 
 SIP.prototype.presence = function() {
-	var self = this;
 	var publishSession = this.stack.newSession('publish', {
-		events_listener: {
-			events: '*',
-			listener: function(event) {
-				console.info('presence session event = ' + event.type);
-				if(event.description) {
-					console.info(' ** ' + event.description + ' ** ');
-				}
-			}
+		events_listener : {
+		    events : '*',
+		    listener : function(event) {
+			    console.info('presence session event = ' + event.type);
+			    if (event.description) {
+				    console.info(' ** ' + event.description + ' ** ');
+			    }
+		    }
 		}
 	});
 	var contentType = 'application/pidf+xml';
@@ -78,87 +79,84 @@ SIP.prototype.presence = function() {
 
 	// send the PUBLISH request
 	publishSession.publish(content, contentType, {
-		expires: 200,
-		sip_caps: [{
-			name: '+g.oma.sip-im'
-		}, {
-			name: '+sip.ice'
-		}, {
-			name: 'language',
-			value: '\"en\"'
-		}],
-		sip_headers: [{
-			name: 'Event',
-			value: 'presence'
-		}, {
-			name: 'Organization',
-			value: 'Doubango Telecom'
-		}]
+	    expires : 200,
+	    sip_caps : [ {
+		    name : '+g.oma.sip-im'
+	    }, {
+		    name : '+sip.ice'
+	    }, {
+	        name : 'language',
+	        value : '\"en\"'
+	    } ],
+	    sip_headers : [ {
+	        name : 'Event',
+	        value : 'presence'
+	    }, {
+	        name : 'Organization',
+	        value : 'Doubango Telecom'
+	    } ]
 	});
 };
 
 SIP.prototype.sendMessage = function(toAddr, message) {
 	var self = this;
-	if(!this.messageSession) {
-		this.messageSession = this.stack.newSession('message', {
-			events_listener: {
-				events: '*',
-				listener: function(event) {
-					console.info('message session event = ' + event.type);
-					if(event.description) {
-						console.info(' ** ' + event.description + ' ** ');
-					}
-					if(self.callbacks[event.type]) {
-						for(var loop = 0; loop < self.callbacks[event.type].length; loop++) {
-							self.callbacks[event.type][loop]('message', event);
-						}
-					}
-				}
-			}
-		// optional: '*' means all events
-		});
-	}
+	var messageSession = this.stack.newSession('message', {
+		events_listener : {
+		    events : '*',
+		    listener : function(event) {
+			    console.info('message session event = ' + event.type);
+			    if (event.description) {
+				    console.info(' ** ' + event.description + ' ** ');
+			    }
+			    if (self.callbacks[event.type]) {
+				    for (var loop = 0; loop < self.callbacks[event.type].length; loop++) {
+					    self.callbacks[event.type][loop]('message', event);
+				    }
+			    }
+		    }
+		}
+	// optional: '*' means all events
+	});
 	messageSession.send(toAddr, message, 'text/plain;charset=utf-8');
 	return messageSession;
 };
 
 SIP.prototype.call = function(toaddr) {
 	var self = this;
-	if(!this.callSession) {
-		this.callSession = this.stack.newSession('call-audio', {
-			audio_remote: document.getElementById('sip_output'),
-			sip_caps: [{
-				name: '+g.oma.sip-im'
-			}, {
-				name: '+sip.ice'
-			}, {
-				name: 'language',
-				value: '\"en\"'
-			}],
-			expires: 100,
-			events_listener: {
-				events: '*',
-				listener: function(event) {
-					console.info('call session event = ' + event.type);
-					if(event.description) {
-						console.info(' ** ' + event.description + ' ** ');
-					}
-					if(self.callbacks[event.type]) {
-						for(var loop = 0; loop < self.callbacks[event.type].length; loop++) {
-							self.callbacks[event.type][loop]('call', event);
-						}
-					}
-				}
-			}
-		// optional: '*' means all events
-		});
-	}
-	this.callSession.call(toaddr);
-	return this.callSession;
+	var callSession = this.stack.newSession('call-audio', {
+	    audio_remote : document.getElementById('sip_output'),
+	    sip_caps : [ {
+		    name : '+g.oma.sip-im'
+	    }, {
+		    name : '+sip.ice'
+	    }, {
+	        name : 'language',
+	        value : '\"en\"'
+	    } ],
+	    expires : 100,
+	    events_listener : {
+	        events : '*',
+	        listener : function(event) {
+		        console.info('call session event = ' + event.type);
+		        if (event.description) {
+			        console.info(' ** ' + event.description + ' ** ');
+		        }
+		        if (self.callbacks[event.type]) {
+			        for (var loop = 0; loop < self.callbacks[event.type].length; loop++) {
+				        self.callbacks[event.type][loop]('call', event);
+			        }
+		        }
+	        }
+	    }
+	// optional: '*' means all events
+	});
+	callSession.call(toaddr);
+	return callSession;
 };
 
 SIP.prototype.acceptMessage = function(event) {
-	event.newSession.accept(); // e.newSession.reject(); to reject the message
+	event.newSession.accept(); // e.newSession.reject(); to reject the
+	// message
 	console.info('SMS-content = ' + event.getContentString() + ' and SMS-content-type = ' + event.getContentType());
 };
 
@@ -173,38 +171,38 @@ SIP.prototype.declineCall = function(event) {
 SIP.prototype.setOptions = function(options) {
 	var self = this;
 	this.configuration = $.extend({
-		realm: 'sip2sip.info', // mandatory: domain name
-		impi: 'bob', // mandatory: authorization name (IMS Private
-		// Identity)
-		impu: 'sip:bob@example.org', // mandatory: valid SIP Uri (IMS
-		// Public Identity)
-		password: null, // optional
-		display_name: null, // optional
-		websocket_proxy_url: null, // optional
-		outbound_proxy_url: null, // optional
-		ice_servers: null,
-		enable_rtcweb_breaker: false, // optional
-		enable_early_ims: true,
-		enable_media_stream_cache: false,
-		sip_headers: [ // optional
-		{
-			name: 'User-Agent',
-			value: 'IM-client/OMA1.0 sipML5-v1.0.0.0'
-		}]
+	    realm : 'sip2sip.info', // mandatory: domain name
+	    impi : 'bob', // mandatory: authorization name (IMS Private
+	    // Identity)
+	    impu : 'sip:bob@example.org', // mandatory: valid SIP Uri (IMS
+	    // Public Identity)
+	    password : null, // optional
+	    display_name : null, // optional
+	    websocket_proxy_url : null, // optional
+	    outbound_proxy_url : null, // optional
+	    ice_servers : null,
+	    enable_rtcweb_breaker : false, // optional
+	    enable_early_ims : true,
+	    enable_media_stream_cache : false,
+	    sip_headers : [ // optional
+	    {
+	        name : 'User-Agent',
+	        value : 'IM-client/OMA1.0 sipML5-v1.0.0.0'
+	    } ]
 	}, options);
-	if(!this.stack) {
+	if (!this.stack) {
 		console.log(this.configuration);
 		this.stack = new SIPml.Stack(this.configuration);
 		this.stack.addEventListener('*', function(event) {
 			console.info('sip stack event = ' + event.type);
-			if(event.description) {
+			if (event.description) {
 				console.info(' ** ' + event.description + ' ** ');
 			}
-			if(event.type == 'started') {
+			if (event.type == 'started') {
 				self.login();
 			}
-			if(self.callbacks[event.type]) {
-				for(var loop = 0; loop < self.callbacks[event.type].length; loop++) {
+			if (self.callbacks[event.type]) {
+				for (var loop = 0; loop < self.callbacks[event.type].length; loop++) {
 					self.callbacks[event.type][loop]('stack', event);
 				}
 			}
