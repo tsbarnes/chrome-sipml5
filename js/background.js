@@ -3,9 +3,9 @@
  */
 
 var options = {
-	realm: null,
-	impi: null,
-	impu: null,
+	realm: '',
+	impi: '',
+	impu: '',
 	password: null,
 	display_name: null,
 	websocket_proxy_url: null,
@@ -58,7 +58,9 @@ chrome.notifications.onClosed.addListener(function(notificationId, byUser) {
 		if(byUser == true) {
 			client.stack.ao_sessions[id].reject();
 		}
-		notifySound.stop();
+		if(notifySound) {
+			notifySound.stop();
+		}
 	}
 });
 
@@ -100,7 +102,9 @@ client.addListener('i_new_call', function(type, event) {
 
 chrome.storage.local.get(options, function(items) {
 	for( var key in items) {
-		options[key] = items[key];
+		if(items[key] != null) {
+			options[key] = items[key];
+		}
 	}
 
 	client.setOptions(options);
@@ -117,13 +121,16 @@ chrome.storage.onChanged.addListener(function(changes, areaName) {
 
 chrome.runtime.onConnect.addListener(function(port) {
 	if(port.name == 'options') {
+		console.log('Options page connected to background.');
 		port.onMessage.addListener(function(message) {
 			if(message.type == 'options') {
 				port.postMessage(options);
 			}
 		});
 	} else if(port.name == 'popup') {
+		console.log('Popup connected to background.');
 		port.onMessage.addListener(function(message) {
+			console.log('Popup message:', message);
 			if(message.type == 'calls') {
 				var response = {};
 				for( var id in client.stack.ao_sessions) {
@@ -138,7 +145,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 				port.postMessage(response);
 			} else if(message.type == 'call') {
 				console.log('Calling ' + message.toaddr);
-				client.call(message.toaddr);
+				client.sipCall(message.toaddr);
 			} else if(message.type == 'hangup') {
 				console.log('Hanging up');
 				client.stack.ao_sessions[message.session].hangup();

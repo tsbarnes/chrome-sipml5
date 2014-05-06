@@ -8,7 +8,7 @@
 <title>Chrome SIP Client</title>
 </head>
 <body>
-    <form ng-controller="SIPClientCtrl" ng-submit="call()">
+    <form ng-controller="SIPClientCtrl" ng-submit="sipCall()">
         <fieldset id="new_call">
             <div>
                 <label for="toaddr">To:</label>
@@ -16,10 +16,10 @@
             </div>
         	<button type="submit">Call</button>
         </fieldset>
-        <fieldset ng-repeat="call in calls">
-        	<output>{{ call.session }}</output>
-        	<button type="button" ng-click="answer(call)">Answer</button>
-        	<button type="button" ng-click="hangup(call)">Hang up</button>
+        <fieldset ng-repeat="sipCall in calls">
+        	<output>{{ sipCall.session }}</output>
+        	<button type="button" ng-click="answer(sipCall)">Answer</button>
+        	<button type="button" ng-click="hangup(sipCall)">Hang up</button>
         </fieldset>
     </form>
     <script type="text/javascript" src="js/lib/jquery.js"></script>

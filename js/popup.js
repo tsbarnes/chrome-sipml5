@@ -19,24 +19,24 @@ function SIPClientCtrl($scope) {
 		type: 'calls'
 	});
 
-	$scope.call = function() {
-		port.postMessage({
+	$scope.sipCall = function() {
+		$scope.port.postMessage({
 			type: 'call',
 			toaddr: $scope.toaddr
 		});
 	};
 
-	$scope.answer = function(call) {
-		port.postMessage({
+	$scope.answer = function(sipCall) {
+		$scope.port.postMessage({
 			type: 'answer',
-			session: call.session
+			session: sipCall.session
 		});
 	};
 
-	$scope.hangup = function(call) {
-		port.postMessage({
+	$scope.hangup = function(sipCall) {
+		$scope.port.postMessage({
 			type: 'hangup',
-			session: call.session
+			session: sipCall.session
 		});
 	};
 }

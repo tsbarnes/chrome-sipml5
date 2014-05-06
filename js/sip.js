@@ -122,7 +122,7 @@ SIP.prototype.sendMessage = function(toAddr, message) {
 	return messageSession;
 };
 
-SIP.prototype.call = function(toaddr) {
+SIP.prototype.sipCall = function(toaddr) {
 	var self = this;
 	if(!this.callSession) {
 		this.callSession = this.stack.newSession('call-audio', {
@@ -173,7 +173,7 @@ SIP.prototype.declineCall = function(event) {
 SIP.prototype.setOptions = function(options) {
 	var self = this;
 	this.configuration = $.extend({
-		realm: 'sip2sip.info', // mandatory: domain name
+		realm: 'example.org', // mandatory: domain name
 		impi: 'bob', // mandatory: authorization name (IMS Private
 		// Identity)
 		impu: 'sip:bob@example.org', // mandatory: valid SIP Uri (IMS
@@ -182,7 +182,7 @@ SIP.prototype.setOptions = function(options) {
 		display_name: null, // optional
 		websocket_proxy_url: null, // optional
 		outbound_proxy_url: null, // optional
-		ice_servers: null,
+		ice_servers: [],
 		enable_rtcweb_breaker: false, // optional
 		enable_early_ims: true,
 		enable_media_stream_cache: false,

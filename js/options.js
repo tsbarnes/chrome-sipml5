@@ -34,6 +34,7 @@ function SIPOptionsCtrl($scope) {
 		navigator.webkitGetUserMedia({
 			audio: true
 		}, function() {
+		}, function() {
 		});
 	};
 
