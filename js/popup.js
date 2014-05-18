@@ -7,17 +7,31 @@ function SIPClientCtrl($scope) {
 		name: 'popup'
 	});
 	$scope.toaddr = '';
+	$scope.connected = false;
 	$scope.calls = {};
 
 	$scope.port.onMessage.addListener(function(message) {
-		for( var key in message) {
+		$scope.connected = message.connected;
+		for( var key in message.calls) {
 			$scope.calls[key] = message[key];
 		}
 		$scope.$apply();
 	});
 	$scope.port.postMessage({
-		type: 'calls'
+		type: 'noop'
 	});
+
+	$scope.connect = function() {
+		$scope.port.postMessage({
+			type: 'connect'
+		});
+	};
+
+	$scope.disconnect = function() {
+		$scope.port.postMessage({
+			type: 'disconnect'
+		});
+	};
 
 	$scope.sipCall = function() {
 		$scope.port.postMessage({

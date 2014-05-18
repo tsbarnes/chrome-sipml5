@@ -9,7 +9,11 @@
 </head>
 <body>
     <form ng-controller="SIPClientCtrl" ng-submit="sipCall()">
-        <fieldset id="new_call">
+        <fieldset id="connection">
+            <button type="button" ng-hide="connected" ng-click="connect()">Connect</button>
+            <button type="button" ng-show="connected" ng-click="disconnect()">Disconnect</button>
+        </fieldset>
+        <fieldset id="new_call" ng-show="connected">
             <div>
                 <label for="toaddr">To:</label>
                 <input type="text" id="toaddr" name="toaddr" ng-model="toaddr">
