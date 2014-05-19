@@ -14,11 +14,11 @@
             <button type="button" ng-show="connected" ng-click="disconnect()">Disconnect</button>
         </fieldset>
         <fieldset id="new_call" ng-show="connected">
+            <label for="toaddr">New call to:</label>
             <div>
-                <label for="toaddr">To:</label>
                 <input type="text" id="toaddr" name="toaddr" ng-model="toaddr">
+                <button type="submit">Call</button>
             </div>
-        	<button type="submit">Call</button>
         </fieldset>
         <fieldset ng-repeat="sipCall in calls">
         	<output>{{ sipCall.session }}</output>
