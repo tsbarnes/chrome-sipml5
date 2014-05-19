@@ -6,10 +6,10 @@ var options = {
 	realm: '',
 	impi: '',
 	impu: '',
-	password: null,
-	display_name: null,
-	websocket_proxy_url: null,
-	outbound_proxy_url: null,
+	password: '',
+	display_name: '',
+	websocket_proxy_url: '',
+	outbound_proxy_url: '',
 	ice_servers: [],
 	enable_rtcweb_breaker: true,
 	enable_early_ims: true,
@@ -82,6 +82,10 @@ client.addListener('connected', function(type, event) {
 			eventTime: Date.now() + 500,
 			priority: -2
 		}, function(notificationId) {
+			setTimeout(function() {
+				chrome.notifications.clear(notificationId, function(wasCleared) {
+				});
+			}, 5000);
 		});
 	}
 });

@@ -190,7 +190,15 @@ SIP.prototype.setOptions = function(options) {
 			value: 'IM-client/OMA1.0 sipML5-v1.0.0.0'
 		}]
 	}, options);
-	if (!this.stack) {
+	if (!this.configuration.realm) {
+		console.log("SIP realm not set, not connecting");
+	} else if (!this.configuration.impi) {
+		console.log("IMPI not set, not connecting");
+	} else if (!this.stack) {
+		if (!this.configuration.impu) {
+			this.configuration.impu = "sip:" + this.configuration.impi;
+			this.configuration.impu += "@" + this.configuration.realm;
+		}
 		console.log(this.configuration);
 		this.stack = new SIPml.Stack(this.configuration);
 		this.stack.addEventListener('*', function(event) {
