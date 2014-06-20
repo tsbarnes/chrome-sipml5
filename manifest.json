@@ -26,8 +26,7 @@
           "19": "img/icon19.png",
           "38": "img/icon38.png"
       },
-      "default_title": "SIP Client",
-      "default_popup": "popup.html"
+      "default_title": "SIP Client"
   },
   "options_page": "options.html",
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",

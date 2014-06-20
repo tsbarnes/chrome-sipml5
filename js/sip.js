@@ -172,10 +172,8 @@ SIP.prototype.setOptions = function(options) {
 	var self = this;
 	this.configuration = $.extend({
 		realm: 'example.org', // mandatory: domain name
-		impi: 'bob', // mandatory: authorization name (IMS Private
-		// Identity)
-		impu: 'sip:bob@example.org', // mandatory: valid SIP Uri (IMS
-		// Public Identity)
+		impi: 'bob', // mandatory: authorization name (IMS Private Identity)
+		impu: 'sip:bob@example.org', // mandatory: valid SIP Uri (IMS Public Identity)
 		password: null, // optional
 		display_name: null, // optional
 		websocket_proxy_url: null, // optional

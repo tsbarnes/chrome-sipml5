@@ -15,8 +15,22 @@ var options = {
 	enable_early_ims: true,
 	enable_media_stream_cache: false
 };
+var popupOptions = {
+	left: null,
+	top: null,
+	width: 275,
+	height: 400
+};
 var client = new SIP();
 var notifySound = new Audio('wav/phone-ringing.wav');
+
+chrome.browserAction.onClicked.addListener(function() {
+	var windowOptions = $.extend({
+		url: "popup.html",
+		type: "detached_panel"
+	}, popupOptions);
+	chrome.windows.create(windowOptions);
+});
 
 chrome.browserAction.setBadgeText({
 	text: 'X'
@@ -27,7 +41,7 @@ chrome.notifications.onButtonClicked.addListener(function(notificationId, button
 	var type = notificationInfo[0];
 	var id = notificationInfo[1];
 	if(type == 'sip_incoming_call') {
-		if(buttonIndex == 0) {
+		if(buttonIndex === 0) {
 			client.stack.ao_sessions[id].accept();
 		} else {
 			client.stack.ao_sessions[id].reject();
@@ -59,7 +73,7 @@ chrome.notifications.onClosed.addListener(function(notificationId, byUser) {
 	var type = notificationInfo[0];
 	var id = notificationInfo[1];
 	if(type == 'sip_incoming_call') {
-		if(byUser == true) {
+		if(byUser === true) {
 			client.stack.ao_sessions[id].reject();
 		}
 		if(notifySound) {
@@ -121,8 +135,8 @@ client.addListener('i_new_call', function(type, event) {
 });
 
 chrome.storage.local.get(options, function(items) {
-	for( var key in items) {
-		if(items[key] != null) {
+	for(var key in items) {
+		if(items[key] !== null) {
 			options[key] = items[key];
 		}
 	}
@@ -132,7 +146,7 @@ chrome.storage.local.get(options, function(items) {
 
 chrome.storage.onChanged.addListener(function(changes, areaName) {
 	if(areaName == 'local') {
-		for( var key in changes) {
+		for(var key in changes) {
 			options[key] = changes[key].newValue;
 		}
 		client.setOptions(options);
@@ -155,8 +169,8 @@ chrome.runtime.onConnect.addListener(function(port) {
 			var calls = {};
 			if(client.stack && client.stack.ao_sessions) {
 				for( var id in client.stack.ao_sessions) {
-					if(client.stack.ao_sessions[id] != undefined) {
-						if(client.stack.ao_sessions[id].call != undefined) {
+					if(client.stack.ao_sessions[id] !== undefined) {
+						if(client.stack.ao_sessions[id].call !== undefined) {
 							calls[client.stack.ao_sessions[id].getId()] = {
 								'session': client.stack.ao_sessions[id].getId()
 							};
