@@ -101,6 +101,12 @@ client.addListener('connected', function(type, event) {
 				});
 			}, 5000);
 		});
+	} else if(type == 'call') {
+		chrome.runtime.sendMessage({
+			type: 'update',
+			connected: client.connected(),
+			calls: client.calls()
+		});
 	}
 });
 
@@ -161,65 +167,45 @@ chrome.runtime.onConnect.addListener(function(port) {
 				port.postMessage(options);
 			}
 		});
-	} else if(port.name == 'popup') {
-		console.log('Popup connected to background.');
-		port.onMessage.addListener(function(message) {
-			console.log('Popup message:', message);
-			var connected = false;
-			var calls = {};
-			if(client.stack && client.stack.ao_sessions) {
-				for( var id in client.stack.ao_sessions) {
-					if(client.stack.ao_sessions[id] !== undefined) {
-						if(client.stack.ao_sessions[id].call !== undefined) {
-							calls[client.stack.ao_sessions[id].getId()] = {
-								'session': client.stack.ao_sessions[id].getId()
-							};
-						} else {
-							connected = true;
-						}
-					}
-				}
-			}
-
-			if(message.type == 'call') {
-				console.log('Calling ' + message.toaddr);
-				client.sipCall(message.toaddr);
-			} else if(message.type == 'hangup') {
-				console.log('Hanging up');
-				client.stack.ao_sessions[message.session].hangup();
-				chrome.notifications.clear('sip_incoming_call', function(wasCleared) {
-					if(wasCleared) {
-						console.log('Call notification cleared');
-					}
-				});
-			} else if(message.type == 'answer') {
-				client.stack.ao_sessions[message.session].accept();
-				chrome.notifications.clear('sip_incoming_call', function(wasCleared) {
-					if(wasCleared) {
-						console.log('Call notification cleared');
-					}
-				});
-			} else if(message.type == 'connect') {
-				client.setOptions(options);
-				connected = true;
-			} else if(message.type == 'disconnect') {
-				client.stack.stop();
-				connected = false;
-			}
-
-			port.postMessage({
-				connected: connected,
-				calls: calls
-			});
-		});
 	}
 });
 
 chrome.runtime.onMessage.addListener(function(message) {
-	console.log('Message:', message);
+	var connected = client.connected();
+	var calls = client.calls();
 
+	console.log('Message:', message);
 	if(message.type == 'call') {
 		console.log('Calling ' + message.toaddr);
 		client.sipCall(message.toaddr);
+	} else if(message.type == 'hangup') {
+		console.log('Hanging up session ' + message.session);
+		client.stack.ao_sessions[message.session].hangup();
+		chrome.notifications.clear('sip_incoming_call', function(wasCleared) {
+			if(wasCleared) {
+				console.log('Call notification cleared');
+			}
+		});
+	} else if(message.type == 'answer') {
+		client.stack.ao_sessions[message.session].accept();
+		chrome.notifications.clear('sip_incoming_call', function(wasCleared) {
+			if(wasCleared) {
+				console.log('Call notification cleared');
+			}
+		});
+	} else if(message.type == 'connect') {
+		client.setOptions(options);
+		connected = true;
+	} else if(message.type == 'disconnect') {
+		client.stack.stop();
+		connected = false;
+	}
+
+	if(message.type !== 'update') {
+		chrome.runtime.sendMessage({
+			type: 'update',
+			connected: connected,
+			calls: calls
+		});
 	}
 });

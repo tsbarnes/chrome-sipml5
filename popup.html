@@ -8,7 +8,7 @@
 <title>Chrome SIP Client</title>
 </head>
 <body>
-    <form ng-controller="SIPClientCtrl" ng-submit="sipCall()">
+    <form ng-controller="SIPClientCtrl" ng-submit="startCall()">
         <fieldset id="connection">
             <button type="button" ng-hide="connected" ng-click="connect()">Connect</button>
             <button type="button" ng-show="connected" ng-click="disconnect()">Disconnect</button>
@@ -24,6 +24,9 @@
         	<output>{{ sipCall.session }}</output>
         	<button type="button" ng-click="answer(sipCall)">Answer</button>
         	<button type="button" ng-click="hangup(sipCall)">Hang up</button>
+          <div class="dialpad">
+            <button type="button" ng-repeat="digit in dialpad" ng-click="dtmf(sipCall, digit)">{{ digit }}</button>
+          </div>
         </fieldset>
     </form>
     <script type="text/javascript" src="js/lib/jquery.js"></script>
