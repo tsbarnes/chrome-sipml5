@@ -171,9 +171,6 @@ chrome.runtime.onConnect.addListener(function(port) {
 });
 
 chrome.runtime.onMessage.addListener(function(message) {
-	var connected = client.connected();
-	var calls = client.calls();
-
 	console.log('Message:', message);
 	if(message.type == 'call') {
 		console.log('Calling ' + message.toaddr);
@@ -204,8 +201,8 @@ chrome.runtime.onMessage.addListener(function(message) {
 	if(message.type !== 'update') {
 		chrome.runtime.sendMessage({
 			type: 'update',
-			connected: connected,
-			calls: calls
+			connected: client.connected(),
+			calls: client.calls()
 		});
 	}
 });

@@ -11,9 +11,11 @@ function SIPClientCtrl($scope) {
 	chrome.runtime.onMessage.addListener(function(message) {
 		if(message.type == 'update') {
 			$scope.connected = message.connected;
-			for( var key in message.calls) {
-				$scope.calls[key] = message[key];
+			$scope.calls = {};
+			for(var key in message.calls) {
+				$scope.calls[key] = message.calls[key];
 			}
+			console.log($scope.calls);
 			$scope.$apply();
 		}
 	});
