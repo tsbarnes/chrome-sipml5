@@ -3,10 +3,10 @@
  */
 
 function SIP() {
+	this.output = document.createElement('audio');
+	this.output.setAttribute('autoplay', 'autoplay');
 	this.stack = null;
 	this.callbacks = {};
-
-	document.write('<audio id="sip_output" autoplay="autoplay"></audio>');
 
 	SIPml.init();
 }
@@ -124,7 +124,7 @@ SIP.prototype.sendMessage = function(toAddr, message) {
 SIP.prototype.sipCall = function(toaddr) {
 	var self = this;
 	var callSession = this.stack.newSession('call-audio', {
-	    audio_remote : document.getElementById('sip_output'),
+	    audio_remote : this.output,
 	    sip_caps : [ {
 		    name : '+g.oma.sip-im'
 	    }, {
@@ -224,4 +224,33 @@ SIP.prototype.setOptions = function(options) {
 SIP.prototype.restart = function() {
 	this.stack.stop();
 	this.stack.start();
+};
+
+SIP.prototype.calls = function() {
+	var calls = {};
+	if(client.stack && client.stack.ao_sessions) {
+		for( var id in client.stack.ao_sessions) {
+			if(client.stack.ao_sessions[id] !== undefined) {
+				if(client.stack.ao_sessions[id].call !== undefined) {
+					calls[client.stack.ao_sessions[id].getId()] = {
+						'session': client.stack.ao_sessions[id].getId()
+					};
+				}
+			}
+		}
+	}
+	return calls;
+};
+
+SIP.prototype.connected = function() {
+	if(client.stack && client.stack.ao_sessions) {
+		for( var id in client.stack.ao_sessions) {
+			if(client.stack.ao_sessions[id] !== undefined) {
+				if(client.stack.ao_sessions[id].call === undefined) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 };
