@@ -190,6 +190,8 @@ chrome.runtime.onMessage.addListener(function(message) {
 				console.log('Call notification cleared');
 			}
 		});
+	} else if(message.type == 'dtmf') {
+		client.dtmf(message.session, message.digit);
 	} else if(message.type == 'connect') {
 		client.setOptions(options);
 		connected = true;
