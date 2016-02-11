@@ -154,6 +154,14 @@ SIP.prototype.sipCall = function(toaddr) {
 	return callSession;
 };
 
+SIP.prototype.dtmf = function(sessionId, digit) {
+	if(this.stack && this.stack.ao_sessions && this.stack.ao_sessions[sessionId]) {
+		if(this.stack.ao_session[sessionId].dtmf !== undefined) {
+			this.stack.ao_sessions[sessionId].dtmf(digit);
+		}
+	}
+};
+
 SIP.prototype.acceptMessage = function(event) {
 	event.newSession.accept(); // e.newSession.reject(); to reject the
 	// message
@@ -228,12 +236,12 @@ SIP.prototype.restart = function() {
 
 SIP.prototype.calls = function() {
 	var calls = {};
-	if(client.stack && client.stack.ao_sessions) {
-		for( var id in client.stack.ao_sessions) {
-			if(client.stack.ao_sessions[id] !== undefined) {
-				if(client.stack.ao_sessions[id].call !== undefined) {
-					calls[client.stack.ao_sessions[id].getId()] = {
-						'session': client.stack.ao_sessions[id].getId()
+	if(this.stack && this.stack.ao_sessions) {
+		for(var id in this.stack.ao_sessions) {
+			if(this.stack.ao_sessions[id] !== undefined) {
+				if(this.stack.ao_sessions[id].call !== undefined) {
+					calls[this.stack.ao_sessions[id].getId()] = {
+						'session': this.stack.ao_sessions[id].getId()
 					};
 				}
 			}
@@ -243,10 +251,10 @@ SIP.prototype.calls = function() {
 };
 
 SIP.prototype.connected = function() {
-	if(client.stack && client.stack.ao_sessions) {
-		for( var id in client.stack.ao_sessions) {
-			if(client.stack.ao_sessions[id] !== undefined) {
-				if(client.stack.ao_sessions[id].call === undefined) {
+	if(this.stack && this.stack.ao_sessions) {
+		for(var id in this.stack.ao_sessions) {
+			if(this.stack.ao_sessions[id] !== undefined) {
+				if(this.stack.ao_sessions[id].call === undefined) {
 					return true;
 				}
 			}
