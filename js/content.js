@@ -2,7 +2,6 @@
  * Click-to-call
  */
 
-(function() {
 /**
  * Vars
  */
@@ -219,5 +218,3 @@ parse();
 //   childList: true,
 //   subtree: true
 // });
-
-}());
