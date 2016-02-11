@@ -13,6 +13,12 @@ body {
                 display: flex;
                 flex-direction: row;
                 vertical-align: middle;
+                flex-wrap: wrap;
+
+                &.dialpad > button {
+                  flex: 1 0 auto;
+                  width: 33%;
+                }
             }
             > button {
                 flex: 1 1 auto;
