@@ -214,3 +214,12 @@ chrome.runtime.onConnect.addListener(function(port) {
 		});
 	}
 });
+
+chrome.runtime.onMessage.addListener(function(message) {
+	console.log('Message:', message);
+
+	if(message.type == 'call') {
+		console.log('Calling ' + message.toaddr);
+		client.sipCall(message.toaddr);
+	}
+});

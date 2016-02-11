@@ -2,35 +2,43 @@
   "name": "SIPML5 Client",
   "description": "A SIP client that sits on your toolbar",
   "icons": {
-      "16": "img/icon16.png",
-      "48": "img/icon48.png",
-      "128": "img/icon128.png"
+    "16": "img/icon16.png",
+    "48": "img/icon48.png",
+    "128": "img/icon128.png"
   },
   "version": "0.3.0",
   "manifest_version": 2,
   "permissions": [
-      "storage",
-      "notifications"
+    "storage",
+    "notifications",
+    "tabs",
+    "*://*/*"
   ],
   "background": {
-      "scripts": [
-          "js/lib/jquery.js",
-          "js/lib/SIPml-api.js",
-          "js/sip.js",
-          "js/background.js"
-      ],
-      "persistent": true
+    "scripts": [
+      "js/lib/jquery.js",
+      "js/lib/SIPml-api.js",
+      "js/sip.js",
+      "js/background.js"
+    ],
+    "persistent": true
   },
   "browser_action": {
-      "default_icon": {
-          "19": "img/icon19.png",
-          "38": "img/icon38.png"
-      },
-      "default_title": "SIP Client"
+    "default_icon": {
+      "19": "img/icon19.png",
+      "38": "img/icon38.png"
+    },
+    "default_title": "SIP Client"
   },
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["js/content.js"]
+    }
+  ],
   "options_page": "options.html",
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "web_accessible_resources": [
-      "img/icon48.png"
+    "img/icon48.png"
   ]
 }
