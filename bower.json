@@ -1,0 +1,32 @@
+{
+  "name": "chrome-sipml5",
+  "description": "SIP client for Google Chrome",
+  "main": "manifest.json",
+  "authors": [
+    "T. Scott Barnes <barnes.t.scott@gmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "google-chrome",
+    "chrome",
+    "sip",
+    "sipml"
+  ],
+  "homepage": "https://github.com/tsbarnes/chrome-sipml5",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.0",
+    "jquery": "^2.2.0",
+    "less": "^2.6.0",
+    "sipml5": "^1.4.217",
+    "font-awesome": "fontawesome#^4.5.0"
+  }
+}

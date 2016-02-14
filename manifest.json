@@ -16,8 +16,8 @@
   ],
   "background": {
     "scripts": [
-      "js/lib/jquery.js",
-      "js/lib/SIPml-api.js",
+      "bower_components/jquery/dist/jquery.js",
+      "bower_components/sipml5/SIPml-api.js",
       "js/sip.js",
       "js/background.js"
     ],
