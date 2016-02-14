@@ -24,13 +24,17 @@ var popupOptions = {
 var client = new SIP();
 var notifySound = new Audio('wav/phone-ringing.wav');
 
-chrome.browserAction.onClicked.addListener(function() {
-	var windowOptions = $.extend({
-		url: "popup.html",
-		type: "detached_panel"
-	}, popupOptions);
-	chrome.windows.create(windowOptions);
+chrome.browserAction.setPopup({
+	popup: "popup.html"
 });
+
+// chrome.browserAction.onClicked.addListener(function() {
+// 	var windowOptions = $.extend({
+// 		url: "popup.html",
+// 		type: "detached_panel"
+// 	}, popupOptions);
+// 	chrome.windows.create(windowOptions);
+// });
 
 chrome.browserAction.setBadgeText({
 	text: 'X'
