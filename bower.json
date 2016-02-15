@@ -27,6 +27,8 @@
     "jquery": "^2.2.0",
     "less": "^2.6.0",
     "sipml5": "^1.4.217",
-    "font-awesome": "fontawesome#^4.5.0"
+    "font-awesome": "fontawesome#^4.5.0",
+    "angular-bootstrap": "^1.1.2",
+    "bootstrap": "^3.3.6"
   }
 }

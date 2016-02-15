@@ -3,44 +3,64 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="bower_components/font-awesome/css/font-awesome.css">
   <link rel="stylesheet" type="text/css" href="bower_components/angular/angular-csp.css">
-  <link rel="stylesheet/less" type="text/css" href="less/popup.less">
-  <script type="text/javascript" src="bower_components/less/dist/less.js"></script>
+  <link rel="stylesheet" type="text/css" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css">
+  <link rel="stylesheet" type="text/css" href="css/popup.css">
   <title>Chrome SIP Client</title>
 </head>
-<body>
-  <form ng-controller="SIPClientCtrl" ng-submit="startCall()">
-    <fieldset id="connection">
-      <button type="button" ng-hide="connected" ng-click="connect()">Connect</button>
-      <button type="button" ng-show="connected" ng-click="disconnect()">Disconnect</button>
-    </fieldset>
-    <fieldset id="new_call" ng-show="connected">
-      <div>
-        <label for="toaddr">New call to:</label>
-        <input type="text" id="toaddr" name="toaddr" ng-model="toaddr">
+<body ng-controller="SIPClientCtrl" class="container" style="min-width: 300px;">
+  <div class="row">
+  <uib-tabset>
+    <uib-tab heading="Connection">
+      <div class="container">
+        <div class="row">
+          <label>SIP Account:</label>
+          <button type="button" class="btn btn-success" ng-hide="connected" ng-click="connect()">Connect</button>
+          <button type="button" class="btn btn-danger" ng-show="connected" ng-click="disconnect()">Disconnect</button>
+        </div>
+        <form id="new_call" ng-submit="startCall()">
+          <div class="row form-group">
+            <label for="toaddr" class="sr-only">New call to:</label>
+            <input type="text" id="toaddr" class="form-control" name="toaddr" ng-model="toaddr">
+          </div>
+          <div class="row">
+            <div class="col-xs-12 dialpad">
+              <button type="button" class="dialbtn" ng-repeat="dialbtn in dialpad" ng-click="dialToAddr(dialbtn.digit)">
+                <div class="digit">{{ dialbtn.digit }}</div>
+                <div class="letters">&nbsp;{{ dialbtn.letters }}&nbsp;</div>
+              </button>
+              <button type="submit" class="callbtn">Call</button>
+            </div>
+          </div>
+        </form>
       </div>
-      <div class="dialpad">
-        <button type="button" class="dialbtn" ng-repeat="dialbtn in dialpad" ng-click="dialToAddr(sipCall, dialbtn.digit)">
-          <pre>{{ dialbtn.digit }}</pre>
-          <pre class="letters">{{ dialbtn.letters }}</pre>
-        </button>
+    </uib-tab>
+    <uib-tab ng-repeat="sipCall in calls" heading="Call {{ sipCall.session }}">
+      <div class="container">
+        <div class="row">
+          <output>Call {{ sipCall.session }} active</output>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 dialpad">
+            <button type="button" class="dialbtn" ng-repeat="dialbtn in dialpad" ng-click="dtmf(sipCall, dialbtn.digit)">
+              <div class="digit">{{ dialbtn.digit }}</div>
+              <div class="letters">&nbsp;{{ dialbtn.letters }}&nbsp;</div>
+            </button>
+            <button type="button" class="answerbtn" ng-click="answer(sipCall)">Answer</button>
+            <button type="button" class="hangupbtn" ng-click="hangup(sipCall)">Hang up</button>
+          </div>
+        </div>
       </div>
-      <button type="submit">Call</button>
-    </fieldset>
-    <fieldset ng-repeat="sipCall in calls">
-      <output>{{ sipCall.session }}</output>
-      <div class="dialpad">
-        <button type="button" class="dialbtn" ng-repeat="dialbtn in dialpad" ng-click="dtmf(sipCall, dialbtn.digit)">
-          <pre>{{ dialbtn.digit }}</pre>
-          <pre class="letters">{{ dialbtn.letters }}</pre>
-        </button>
-      </div>
-      <button type="button" ng-click="answer(sipCall)">Answer</button>
-      <button type="button" ng-click="hangup(sipCall)">Hang up</button>
-    </fieldset>
-  </form>
+    </uib-tab>
+  </uib-tabset>
+  </div>
   <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+  <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
   <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+  <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
+  <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <script type="text/javascript" src="js/popup.js"></script>
 </body>
 </html>

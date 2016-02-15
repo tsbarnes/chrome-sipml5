@@ -100,6 +100,10 @@ function SIPClientCtrl($scope) {
 		});
 	};
 
+	$scope.dialToAddr = function(digit) {
+		$scope.toaddr += digit;
+	};
+
 	$scope.startCall = function() {
 		chrome.runtime.sendMessage({
 			type: 'call',
@@ -130,5 +134,5 @@ function SIPClientCtrl($scope) {
 	};
 }
 
-var SIPClient = angular.module('SIPClient', []);
+var SIPClient = angular.module('SIPClient', ['ui.bootstrap']);
 SIPClient.controller('SIPClientCtrl', ['$scope', SIPClientCtrl]);

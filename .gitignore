@@ -28,3 +28,6 @@ bower_components/
 # Various IDE files
 .project
 /.settings/
+
+# Built CSS files
+/css/
