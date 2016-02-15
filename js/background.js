@@ -24,6 +24,14 @@ var popupOptions = {
 var client = new SIP();
 var notifySound = new Audio('wav/phone-ringing.wav');
 
+function sendUpdate() {
+	chrome.runtime.sendMessage({
+		type: 'update',
+		connected: client.connected(),
+		calls: client.calls()
+	});
+}
+
 chrome.browserAction.setPopup({
 	popup: "popup.html"
 });
@@ -105,13 +113,12 @@ client.addListener('connected', function(type, event) {
 				});
 			}, 5000);
 		});
-	} else if(type == 'call') {
-		chrome.runtime.sendMessage({
-			type: 'update',
-			connected: client.connected(),
-			calls: client.calls()
-		});
 	}
+	sendUpdate();
+});
+
+client.addListener('terminating', function(type, event) {
+	sendUpdate();
 });
 
 client.addListener('stopped', function(type, event) {
@@ -121,6 +128,7 @@ client.addListener('stopped', function(type, event) {
 	});
 	chrome.notifications.clear('sip_connected', function(wasCleared) {
 	});
+	sendUpdate();
 });
 
 client.addListener('i_new_call', function(type, event) {
@@ -142,6 +150,7 @@ client.addListener('i_new_call', function(type, event) {
 		notifySound.load();
 		notifySound.play();
 	}
+	sendUpdate();
 });
 
 chrome.storage.local.get(options, function(items) {
@@ -175,7 +184,6 @@ chrome.runtime.onConnect.addListener(function(port) {
 });
 
 chrome.runtime.onMessage.addListener(function(message) {
-	console.log('Message:', message);
 	if(message.type == 'call') {
 		console.log('Calling ' + message.toaddr);
 		client.sipCall(message.toaddr);
@@ -198,17 +206,9 @@ chrome.runtime.onMessage.addListener(function(message) {
 		client.dtmf(message.session, message.digit);
 	} else if(message.type == 'connect') {
 		client.setOptions(options);
-		connected = true;
 	} else if(message.type == 'disconnect') {
 		client.stack.stop();
-		connected = false;
-	}
-
-	if(message.type !== 'update') {
-		chrome.runtime.sendMessage({
-			type: 'update',
-			connected: client.connected(),
-			calls: client.calls()
-		});
+	} else if(message.type == 'noop') {
+		sendUpdate();
 	}
 });

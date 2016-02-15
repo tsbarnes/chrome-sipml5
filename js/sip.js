@@ -124,29 +124,33 @@ SIP.prototype.sendMessage = function(toAddr, message) {
 SIP.prototype.sipCall = function(toaddr) {
 	var self = this;
 	var callSession = this.stack.newSession('call-audio', {
-	    audio_remote : this.output,
-	    sip_caps : [ {
-		    name : '+g.oma.sip-im'
-	    }, {
-		    name : '+sip.ice'
-	    }, {
-	        name : 'language',
-	        value : '\"en\"'
-	    } ],
-	    expires : 100,
-	    events_listener : {
-	        events : '*',
-	        listener : function(event) {
-		        console.info('call session event = ' + event.type);
-		        if (event.description) {
-			        console.info(' ** ' + event.description + ' ** ');
-		        }
-		        if (self.callbacks[event.type]) {
-			        for (var loop = 0; loop < self.callbacks[event.type].length; loop++) {
-				        self.callbacks[event.type][loop]('call', event);
-			        }
-		        }
-	        }
+	    audio_remote: this.output,
+	    sip_caps: [
+				{
+		    	name: '+g.oma.sip-im'
+	    	},
+				{
+		    	name: '+sip.ice'
+	    	},
+				{
+	        name: 'language',
+	        value: '\"en\"'
+	    	}
+			],
+	    expires: 100,
+	    events_listener: {
+	      events: '*',
+	      listener: function(event) {
+		    	console.info('call session event = ' + event.type);
+		      if (event.description) {
+			      console.info(' ** ' + event.description + ' ** ');
+		      }
+		      if (self.callbacks[event.type]) {
+			      for (var loop = 0; loop < self.callbacks[event.type].length; loop++) {
+				      self.callbacks[event.type][loop]('call', event);
+			      }
+		      }
+	      }
 	    }
 	// optional: '*' means all events
 	});
@@ -191,10 +195,11 @@ SIP.prototype.setOptions = function(options) {
 		enable_early_ims: true,
 		enable_media_stream_cache: false,
 		sip_headers: [ // optional
-		{
-			name: 'User-Agent',
-			value: 'IM-client/OMA1.0 sipML5-v1.0.0.0'
-		}]
+			{
+				name: 'User-Agent',
+				value: 'IM-client/OMA1.0 sipML5-v1.0.0.0'
+			}
+		]
 	}, options);
 	if (!this.configuration.realm) {
 		console.log("SIP realm not set, not connecting");
@@ -239,10 +244,12 @@ SIP.prototype.calls = function() {
 	if(this.stack && this.stack.ao_sessions) {
 		for(var id in this.stack.ao_sessions) {
 			if(this.stack.ao_sessions[id] !== undefined) {
-				if(this.stack.ao_sessions[id].call !== undefined) {
-					calls[this.stack.ao_sessions[id].getId()] = {
-						'session': this.stack.ao_sessions[id].getId()
-					};
+				if(this.stack.ao_sessions[id] instanceof SIPml.Session.Call) {
+					if(this.stack.ao_sessions[id].o_session.o_stream_remote !== null) {
+						calls[this.stack.ao_sessions[id].getId()] = {
+							'session': this.stack.ao_sessions[id].getId()
+						};
+					}
 				}
 			}
 		}
@@ -254,7 +261,7 @@ SIP.prototype.connected = function() {
 	if(this.stack && this.stack.ao_sessions) {
 		for(var id in this.stack.ao_sessions) {
 			if(this.stack.ao_sessions[id] !== undefined) {
-				if(this.stack.ao_sessions[id].call === undefined) {
+				if(this.stack.ao_sessions[id] instanceof SIPml.Session.Registration) {
 					return true;
 				}
 			}
