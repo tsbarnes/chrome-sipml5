@@ -17,7 +17,25 @@
   cursor:pointer;
 
   &:active {
-    background-color: green;
+    background-color: #99cc00;
+  }
+
+  &.answerbtn,
+  &.callbtn {
+    color: #99cc00;
+
+    &:active {
+      color: @text-color;
+    }
+  }
+
+  &.hangupbtn {
+    color: #cc3300;
+    border-color: #cc3300;
+
+    &:active {
+      color: @text-color;
+    }
   }
 
   div {
