@@ -1,5 +1,13 @@
-var gulp = require('gulp');
-var less = require('gulp-less');
+'use strict';
+
+var gulp = require('gulp'),
+    clean = require('gulp-clean'),
+    less = require('gulp-less');
+
+gulp.task('clean', function() {
+	return gulp.src('css/*', {read: false})
+		.pipe(clean());
+});
 
 gulp.task('options.css', function() {
     gulp.src(['less/options.less'])
@@ -13,6 +21,8 @@ gulp.task('popup.css', function() {
         .pipe(gulp.dest('css/'));
 });
 
+gulp.task('styles', ['options.css', 'popup.css']);
+
 gulp.task('watch', function() {
     gulp.watch('less/options.less', function(event) {
         gulp.run('options.css');
@@ -23,4 +33,4 @@ gulp.task('watch', function() {
     });
 });
 
-gulp.task('default', ['options.css', 'popup.css', 'watch']);
+gulp.task('default', ['styles']);
