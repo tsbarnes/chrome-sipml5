@@ -13,6 +13,25 @@
 <body ng-controller="SIPClientCtrl" class="container" style="min-width: 300px;">
   <div class="row">
   <uib-tabset>
+    <uib-tab ng-repeat="sipCall in calls" heading="Call {{ sipCall.session }}">
+      <div class="container">
+        <div class="row">
+          <output>Call {{ sipCall.session }} active</output>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 dialpad">
+            <button type="button" class="dialbtn" ng-repeat="dialbtn in dialpad" ng-click="dtmf(sipCall, dialbtn.digit)">
+              <div class="digit">{{ dialbtn.digit }}</div>
+              <div class="letters">&nbsp;{{ dialbtn.letters }}&nbsp;</div>
+            </button>
+            <div class="controls">
+              <button type="button" class="answerbtn" ng-click="answer(sipCall)"><i class="fa fa-phone"></i></button>
+              <button type="button" class="hangupbtn" ng-click="hangup(sipCall)"><i class="fa fa-phone fa-rotate-180"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </uib-tab>
     <uib-tab heading="Connection">
       <div class="container">
         <div class="row">
@@ -31,27 +50,12 @@
                 <div class="digit">{{ dialbtn.digit }}</div>
                 <div class="letters">&nbsp;{{ dialbtn.letters }}&nbsp;</div>
               </button>
-              <button type="submit" class="callbtn"><i class="fa fa-phone"></i></button>
+              <div class="controls">
+                <button type="submit" class="callbtn"><i class="fa fa-phone"></i></button>
+              </div>
             </div>
           </div>
         </form>
-      </div>
-    </uib-tab>
-    <uib-tab ng-repeat="sipCall in calls" heading="Call {{ sipCall.session }}">
-      <div class="container">
-        <div class="row">
-          <output>Call {{ sipCall.session }} active</output>
-        </div>
-        <div class="row">
-          <div class="col-xs-12 dialpad">
-            <button type="button" class="dialbtn" ng-repeat="dialbtn in dialpad" ng-click="dtmf(sipCall, dialbtn.digit)">
-              <div class="digit">{{ dialbtn.digit }}</div>
-              <div class="letters">&nbsp;{{ dialbtn.letters }}&nbsp;</div>
-            </button>
-            <button type="button" class="answerbtn" ng-click="answer(sipCall)"><i class="fa fa-phone"></i></button>
-            <button type="button" class="hangupbtn" ng-click="hangup(sipCall)"><i class="fa fa-phone fa-rotate-180"></i></button>
-          </div>
-        </div>
       </div>
     </uib-tab>
   </uib-tabset>
