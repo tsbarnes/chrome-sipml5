@@ -107,6 +107,10 @@ function SIPClientCtrl($scope) {
 		$scope.toaddr += digit;
 	};
 
+	$scope.toAddrChange = function() {
+		$scope.toaddr = $('#toaddr').val();
+	};
+
 	$scope.startCall = function() {
 		chrome.runtime.sendMessage({
 			type: 'call',

@@ -1,8 +1,46 @@
 @import '../bower_components/bootstrap/less/bootstrap.less';
 @import '../bower_components/font-awesome/less/font-awesome.less';
 
+@brand-success: #99cc00;
+@brand-danger: #cc0082;
+
 .tab-pane > .container {
   margin: 3vw;
+}
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0;
+
+  button {
+    border-radius: 1em;
+    width: 27.3vw;
+    text-align: center;
+    transition: background-color 0.5s ease;
+    font-size: 1em;
+    box-sizing:border-box;
+    padding: 2vw 0;
+    margin: 2vw;
+    border: 2px solid @brand-info;
+    background: transparent;
+    cursor:pointer;
+
+    &:active {
+      background-color: @text-color;
+    }
+
+    &.holdbtn {
+      border-color: @brand-warning;
+
+      &:active {
+        background-color: @brand-warning;
+      }
+    }
+  }
 }
 
 .dialpad {
@@ -21,19 +59,19 @@
     transition: background-color 0.5s ease;
     font-size: 2em;
     box-sizing:border-box;
-    padding: 2vw 0 0 0;
-    margin: 0 2vw 2vw 2vw;
-    border:2px solid #99cc00;
+    padding: 1vw 0 0 0;
+    margin: 2vw;
+    border: 2px solid @brand-success;
     background: transparent;
     cursor:pointer;
 
     &:active {
-      background-color: #99cc00;
+      background-color: @brand-success;
     }
 
     &.answerbtn,
     &.callbtn {
-      color: #99cc00;
+      color: @brand-success;
 
       &:active {
         color: @text-color;
@@ -41,11 +79,12 @@
     }
 
     &.hangupbtn {
-      color: #cc3300;
-      border-color: #cc3300;
+      color: @brand-danger;
+      border-color: @brand-danger;
 
       &:active {
         color: @text-color;
+        background-color: @brand-danger;
       }
     }
 
