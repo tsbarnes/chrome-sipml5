@@ -32,3 +32,5 @@ bower_components/
 # Build and distribution files
 /build/
 /dist/
+
+/.travis.key

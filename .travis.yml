@@ -8,9 +8,18 @@ before_script:
 script: gulp zip
 deploy:
   provider: releases
-  api_key: $GITHUB_ACCESS_TOKEN
+  api_key: "$GITHUB_ACCESS_TOKEN"
   file_glob: true
   file: dist/chrome-sipml5-*.zip
   on:
     repo: tsbarnes/chrome-sipml5
     tags: true
+before_install:
+- echo -e "Host $DEPLOYMENT_SSH_SERVER\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+- openssl aes-256-cbc -K $encrypted_79ddc68575c3_key -iv $encrypted_79ddc68575c3_iv
+  -in .travis.key.enc -out .travis.key -d
+after_success:
+- chmod 600 .travis.key
+- mv .travis.key ~/.ssh/id_rsa
+- ssh $DEPLOYMENT_SSH_SERVER mkdir -p $TRAVIS_BUILD_NUMBER
+- scp dist/chrome-sipml5-*.zip $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SSH_SERVER:$TRAVIS_BUILD_NUMBER/
