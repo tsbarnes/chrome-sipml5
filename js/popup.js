@@ -101,6 +101,9 @@ function SIPClientCtrl($scope) {
 	};
 
 	$scope.dialToAddr = function(digit) {
+		if($scope.toaddr == '') {
+			$scope.toaddr = '+';
+		}
 		$scope.toaddr += digit;
 	};
 

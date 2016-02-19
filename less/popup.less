@@ -1,24 +1,28 @@
 @import '../bower_components/bootstrap/less/bootstrap.less';
 @import '../bower_components/font-awesome/less/font-awesome.less';
 
+.tab-pane > .container {
+  margin: 3vw;
+}
+
 .dialpad {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-around;
+  padding: 0;
 
   button {
     border-radius: 50%;
-    margin: 1vw;
-    height: 27vw;
-    width: 27vw;
+    height: 27.3vw;
+    width: 27.3vw;
     text-align: center;
     transition: background-color 0.5s ease;
     font-size: 2em;
     box-sizing:border-box;
-    padding: 1vw 0 0 0;
-    margin: 0 1vw 1vw 1vw;
+    padding: 2vw 0 0 0;
+    margin: 0 2vw 2vw 2vw;
     border:2px solid #99cc00;
     background: transparent;
     cursor:pointer;
@@ -50,6 +54,7 @@
 
       &.letters {
         font-size: 0.5em;
+        margin-top: -0.5em;
         text-transform: uppercase;
       }
     }

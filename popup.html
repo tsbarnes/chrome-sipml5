@@ -10,7 +10,7 @@
   <link rel="stylesheet" type="text/css" href="css/popup.css">
   <title>Chrome SIP Client</title>
 </head>
-<body ng-controller="SIPClientCtrl" class="container" style="min-width: 300px;">
+<body ng-controller="SIPClientCtrl" class="container" style="min-width: 250px;">
   <div class="row">
   <uib-tabset>
     <uib-tab ng-repeat="sipCall in calls" heading="Call {{ sipCall.session }}">
@@ -32,13 +32,8 @@
         </div>
       </div>
     </uib-tab>
-    <uib-tab heading="Connection">
+    <uib-tab heading="New Call">
       <div class="container">
-        <div class="row">
-          <label>SIP Account:</label>
-          <button type="button" class="btn btn-success" ng-hide="connected" ng-click="connect()">Connect</button>
-          <button type="button" class="btn btn-danger" ng-show="connected" ng-click="disconnect()">Disconnect</button>
-        </div>
         <form id="new_call" ng-submit="startCall()">
           <div class="row form-group">
             <label for="toaddr" class="sr-only">New call to:</label>
