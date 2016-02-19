@@ -1,6 +1,6 @@
 {
   "name": "chrome-sipml5",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A Google Chrome extension that adds a simple voice-only SIP client to the toolbar.",
   "main": "gulpfile.js",
   "scripts": {
