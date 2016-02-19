@@ -21,5 +21,6 @@ after_success:
 - chmod 600 .travis.key
 - mv .travis.key ~/.ssh/id_rsa
 - ssh $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SSH_SERVER -- mkdir -p $TRAVIS_BUILD_NUMBER
-- ls dist/
-- scp dist/chrome-sipml5-*.zip $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SSH_SERVER:$TRAVIS_BUILD_NUMBER/
+- pwd
+- ls $TRAVIS_BUILD_DIR/dist/
+- scp $TRAVIS_BUILD_DIR/dist/chrome-sipml5-*.zip $DEPLOYMENT_SSH_USER@$DEPLOYMENT_SSH_SERVER:$TRAVIS_BUILD_NUMBER/
