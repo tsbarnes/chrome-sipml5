@@ -29,5 +29,6 @@ bower_components/
 .project
 /.settings/
 
-# Built CSS files
-/css/
+# Build and distribution files
+/build/
+/dist/
