@@ -36,6 +36,14 @@ chrome.browserAction.setPopup({
 	popup: "popup.html"
 });
 
+chrome.contextMenus.create({
+	id: 'connected',
+	type: 'checkbox',
+	title: 'Connected',
+	checked: false,
+	contexts: ['browser_action'],
+});
+
 // chrome.browserAction.onClicked.addListener(function() {
 // 	var windowOptions = $.extend({
 // 		url: "popup.html",
@@ -46,6 +54,17 @@ chrome.browserAction.setPopup({
 
 chrome.browserAction.setBadgeText({
 	text: 'X'
+});
+
+chrome.contextMenus.onClicked.addListener(function(info, tab) {
+	if(info.menuItemId == 'connected') {
+		chrome.contextMenus.update('connected', { checked: info.wasChecked });
+		if(info.wasChecked == true) {
+			client.stack.stop();
+		} else {
+			client.setOptions(options);
+		}
+	}
 });
 
 chrome.notifications.onButtonClicked.addListener(function(notificationId, buttonIndex) {
@@ -100,6 +119,7 @@ client.addListener('connected', function(type, event) {
 		chrome.browserAction.setBadgeText({
 			text: ''
 		});
+		chrome.contextMenus.update('connected', { checked: true });
 		chrome.notifications.create('sip_connected', {
 			type: 'basic',
 			iconUrl: 'img/icon48.png',
@@ -126,6 +146,7 @@ client.addListener('stopped', function(type, event) {
 	chrome.browserAction.setBadgeText({
 		text: 'X'
 	});
+	chrome.contextMenus.update('connected', { checked: false });
 	chrome.notifications.clear('sip_connected', function(wasCleared) {
 	});
 	sendUpdate();
