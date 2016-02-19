@@ -90,8 +90,9 @@ gulp.task('watch', ['build'], function() {
 gulp.task('build', ['html', 'styles', 'scripts', 'bower', 'images', 'sounds', 'manifest']);
 
 gulp.task('zip', ['build'], function() {
-	var manifest = require('./manifest'),
-		  distFileName = manifest.name + ' v' + manifest.version + '.zip';
+//	var manifest = require('./manifest'),
+//		  distFileName = manifest.name + ' v' + manifest.version + '.zip';
+  var distFileName = 'chrome-sipml5.zip';
 	gulp.src(['build/**'])
 		  .pipe(zip(distFileName))
 		  .pipe(gulp.dest('dist'));

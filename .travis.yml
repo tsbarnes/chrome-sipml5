@@ -1,8 +1,15 @@
 language: node_js
 node_js:
-  - "0.10"
+- '0.10'
 before_script:
-  - npm install -g bower
-  - npm install -g gulp
-  - bower install
-script: gulp
+- npm install -g bower
+- npm install -g gulp
+- bower install
+script: gulp zip
+deploy:
+  provider: releases
+  api_key: $GITHUB_ACCESS_TOKEN
+  file: dist/chrome-sipml5.zip
+  on:
+    repo: tsbarnes/chrome-sipml5
+    tags: true
