@@ -39,9 +39,9 @@
       <uib-tab-heading><i class="fa fa-plus"></i>&nbsp;<i class="fa fa-phone"></i></uib-tab-heading>
       <div class="container">
         <form id="new_call" ng-submit="startCall()">
-          <div class="row form-group">
+          <div class="row">
             <label for="toaddr" class="sr-only">New call to:</label>
-            <input type="text" class="form-control" id="toaddr" ng-model="toaddr" ng-change="toAddrChange()">
+            <input type="text" id="toaddr" ng-model="toaddr" ng-change="toAddrChange()">
           </div>
           <div class="row">
             <div class="col-xs-12 dialpad">
