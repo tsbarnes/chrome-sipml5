@@ -182,7 +182,7 @@ var createWrapper = function (number) {
     console.log('Calling', num);
     chrome.extension.sendMessage({
       type: 'call',
-      toaddr: '+' + num
+      toaddr: num
     }, function () {
       // DONE
     });
