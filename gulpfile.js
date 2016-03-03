@@ -13,6 +13,8 @@ gulp.task('clean', function() {
 gulp.task('html', function() {
 	gulp.src('*.html')
 		  .pipe(gulp.dest('build'));
+  gulp.src('partials/*.html')
+      .pipe(gulp.dest('build/partials'));
 });
 
 gulp.task('styles', function() {
@@ -67,7 +69,7 @@ gulp.task('manifest', function() {
 });
 
 gulp.task('watch', ['build'], function() {
-  gulp.watch('*.html', function(event) {
+  gulp.watch(['*.html', 'partials/*.html'], function(event) {
     gulp.run('html');
   });
   gulp.watch('less/**', function(event) {

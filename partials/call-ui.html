@@ -1,0 +1,19 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 controls">
+      <button type="button" class="xferbtn" ng-click="transfer(sipCall)"><i class="fa fa-level-up fa-rotate-270"></i></button>
+      <button type="button" class="holdbtn" ng-click="hold(sipCall)"><i class="fa fa-pause"></i></button>
+      <button type="button" class="confbtn" ng-click="conference(sipCall)"><i class="fa fa-plus"></i></button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 dialpad">
+      <button type="button" class="dialbtn" ng-repeat="dialbtn in dialpad" ng-click="dtmf(sipCall, dialbtn.digit)">
+        <div class="digit">{{ dialbtn.digit }}</div>
+        <div class="letters">&nbsp;{{ dialbtn.letters }}&nbsp;</div>
+      </button>
+      <button type="button" class="answerbtn" ng-click="answer(sipCall)"><i class="fa fa-phone"></i></button>
+      <button type="button" class="hangupbtn" ng-click="hangup(sipCall)"><i class="fa fa-phone fa-rotate-180"></i></button>
+    </div>
+  </div>
+</div>

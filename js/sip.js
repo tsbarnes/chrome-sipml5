@@ -7,6 +7,7 @@ function SIP() {
 	this.output.setAttribute('autoplay', 'autoplay');
 	this.stack = null;
 	this.callbacks = {};
+	this.current_calls = {};
 
 	SIPml.init();
 }
@@ -145,6 +146,15 @@ SIP.prototype.sipCall = function(toaddr) {
 		      if (event.description) {
 			      console.info(' ** ' + event.description + ' ** ');
 		      }
+					if (event.type == 'connected') {
+						self.current_calls[event.session.getId()] = {
+							type: 'call',
+							session: event.session.getId(),
+							state: 'active'
+						};
+					} else if (event.type == 'terminating') {
+						delete self.current_calls[event.session.getId()];
+					}
 		      if (self.callbacks[event.type]) {
 			      for (var loop = 0; loop < self.callbacks[event.type].length; loop++) {
 				      self.callbacks[event.type][loop]('call', event);
@@ -165,6 +175,14 @@ SIP.prototype.dtmf = function(sessionId, digit) {
 		}
 	}
 };
+
+SIP.prototype.callTransfer = function(sessionId, toaddr) {
+	if(this.stack && this.stack.ao_sessions && this.stack.ao_sessions[sessionId]) {
+		if(this.stack.ao_session[sessionId].transfer !== undefined) {
+			this.stack.ao_sessions[sessionId].transfer(toaddr);
+		}
+	}
+}
 
 SIP.prototype.acceptMessage = function(event) {
 	event.newSession.accept(); // e.newSession.reject(); to reject the
@@ -219,6 +237,12 @@ SIP.prototype.setOptions = function(options) {
 			}
 			if (event.type == 'started') {
 				self.login();
+			} else if (event.type == 'i_new_call') {
+				self.current_calls[event.newSession.getId()] = {
+					type: 'call',
+					session: event.newSession.getId(),
+					state: 'incoming'
+				};
 			}
 			if (self.callbacks[event.type]) {
 				for (var loop = 0; loop < self.callbacks[event.type].length; loop++) {
@@ -240,21 +264,21 @@ SIP.prototype.restart = function() {
 };
 
 SIP.prototype.calls = function() {
-	var calls = {};
-	if(this.stack && this.stack.ao_sessions) {
-		for(var id in this.stack.ao_sessions) {
-			if(this.stack.ao_sessions[id] !== undefined) {
-				if(this.stack.ao_sessions[id] instanceof SIPml.Session.Call) {
-					if(this.stack.ao_sessions[id].o_session.o_stream_remote !== null) {
-						calls[this.stack.ao_sessions[id].getId()] = {
-							'session': this.stack.ao_sessions[id].getId()
-						};
-					}
-				}
-			}
-		}
-	}
-	return calls;
+	// var calls = {};
+	// if(this.stack && this.stack.ao_sessions) {
+	// 	for(var id in this.stack.ao_sessions) {
+	// 		if(this.stack.ao_sessions[id] !== undefined) {
+	// 			if(this.stack.ao_sessions[id] instanceof SIPml.Session.Call) {
+	// 				if(this.stack.ao_sessions[id].o_session.o_stream_remote !== null) {
+	// 					calls[this.stack.ao_sessions[id].getId()] = {
+	// 						'session': this.stack.ao_sessions[id].getId()
+	// 					};
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// }
+	return this.current_calls;
 };
 
 SIP.prototype.connected = function() {

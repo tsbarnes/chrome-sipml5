@@ -67,11 +67,7 @@ function SIPClientCtrl($scope) {
 			letters: ' '
 		},
 	];
-	$scope.calls = {
-		0: {
-			session: 0
-		}
-	};
+	$scope.calls = {};
 
 	chrome.runtime.onMessage.addListener(function(message) {
 		if(message.type == 'update') {
@@ -138,6 +134,18 @@ function SIPClientCtrl($scope) {
 			session: sipCall.session,
 			digit: digit
 		});
+	};
+
+	$scope.stateIcon = function(sipCall) {
+		if(sipCall.state == 'incoming') {
+			return 'fa-exclamation';
+		} else if(sipCall.state == 'active') {
+			return 'fa-play';
+		} else if(sipCall.state == 'hold') {
+			return 'fa-pause';
+		} else {
+			return 'fa-question';
+		}
 	};
 }
 
