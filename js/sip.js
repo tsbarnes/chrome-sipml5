@@ -138,7 +138,7 @@ SIP.prototype.sipCall = function(toaddr) {
 	        value: '\"en\"'
 	    	}
 			],
-	    expires: 100,
+	    expires: 10,
 	    events_listener: {
 	      events: '*',
 	      listener: function(event) {
@@ -150,9 +150,10 @@ SIP.prototype.sipCall = function(toaddr) {
 						self.current_calls[event.session.getId()] = {
 							type: 'call',
 							session: event.session.getId(),
-							state: 'active'
+							state: 'active',
+							started: Date.now()
 						};
-					} else if (event.type == 'terminating') {
+					} else if (event.type == 'terminating' || event.type == 'terminated') {
 						delete self.current_calls[event.session.getId()];
 					}
 		      if (self.callbacks[event.type]) {
@@ -264,20 +265,12 @@ SIP.prototype.restart = function() {
 };
 
 SIP.prototype.calls = function() {
-	// var calls = {};
-	// if(this.stack && this.stack.ao_sessions) {
-	// 	for(var id in this.stack.ao_sessions) {
-	// 		if(this.stack.ao_sessions[id] !== undefined) {
-	// 			if(this.stack.ao_sessions[id] instanceof SIPml.Session.Call) {
-	// 				if(this.stack.ao_sessions[id].o_session.o_stream_remote !== null) {
-	// 					calls[this.stack.ao_sessions[id].getId()] = {
-	// 						'session': this.stack.ao_sessions[id].getId()
-	// 					};
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	// }
+	for(var id in this.current_calls) {
+		var session = this.current_calls[id].session;
+		if(! this.stack.ao_sessions[session] instanceof SIPml.Session.Call) {
+			delete this.current_calls[id];
+		}
+	}
 	return this.current_calls;
 };
 

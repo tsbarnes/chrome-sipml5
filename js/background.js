@@ -120,19 +120,6 @@ client.addListener('connected', function(type, event) {
 			text: ''
 		});
 		chrome.contextMenus.update('connected', { checked: true });
-		chrome.notifications.create('sip_connected', {
-			type: 'basic',
-			iconUrl: 'img/icon48.png',
-			title: 'SIP connected',
-			message: 'SIP client is now connected!',
-			eventTime: Date.now() + 500,
-			priority: -2
-		}, function(notificationId) {
-			setTimeout(function() {
-				chrome.notifications.clear(notificationId, function(wasCleared) {
-				});
-			}, 5000);
-		});
 	}
 	sendUpdate();
 });
@@ -225,6 +212,8 @@ chrome.runtime.onMessage.addListener(function(message) {
 		});
 	} else if(message.type == 'dtmf') {
 		client.dtmf(message.session, message.digit);
+	} else if(message.type == 'transfer') {
+		client.callTransfer(message.session, message.toaddr);
 	} else if(message.type == 'connect') {
 		client.setOptions(options);
 	} else if(message.type == 'disconnect') {

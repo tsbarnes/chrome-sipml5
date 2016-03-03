@@ -136,6 +136,23 @@ function SIPClientCtrl($scope) {
 		});
 	};
 
+	$scope.transfer = function(sipCall, toaddr) {
+		chrome.runtime.sendMessage({
+			type: 'transfer',
+			session: sipCall.session,
+			toaddr: sipCall.toaddr
+		});
+	};
+
+	$scope.displayText = function(sipCall) {
+		if(sipCall.started) {
+			// TODO: Display duration since call started
+			return "Active call";
+		} else {
+			return "Incoming call";
+		}
+	};
+
 	$scope.stateIcon = function(sipCall) {
 		if(sipCall.state == 'incoming') {
 			return 'fa-exclamation';

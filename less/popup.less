@@ -9,45 +9,58 @@
   margin: 3vw;
 }
 
-input[type="text"] {
-  border: 0;
-  border-bottom: 1px dashed @brand-success;
-  color: @text-color;
-  font-size: 20px;
-  width: 100%;
-  margin-bottom: 4vw;
-}
+.tab-content {
+  min-width: 350px;
 
-.controls {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-around;
-  padding: 0;
+  .row {
+    margin-bottom: 4vw;
+    display: flex;
 
-  button {
-    border-radius: 1em;
-    width: 27.3vw;
-    text-align: center;
-    transition: background-color 0.5s ease;
-    font-size: 1em;
-    box-sizing:border-box;
-    padding: 2vw 0;
-    margin: 2vw;
-    border: 2px solid @brand-info;
-    background: transparent;
-    cursor:pointer;
-
-    &:active {
-      background-color: @text-color;
+    &.toaddr-input {
+      border-bottom: 1px dashed @brand-success;
     }
 
-    &.holdbtn {
-      border-color: @brand-warning;
+    output,
+    input[type="text"] {
+      border: 0;
+      color: @text-color;
+      font-size: 1.8em;
+      flex-grow: 1;
+    }
+
+    button {
+      text-align: center;
+      transition: background-color 0.5s ease;
+      font-size: 1.8em;
+      box-sizing: border-box;
+      padding: 0;
+      padding-left: 0.5em;
+      margin: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      cursor: pointer;
+
+      &:last-child {
+        padding-right: 0.5em;
+      }
 
       &:active {
-        background-color: @brand-warning;
+        color: @text-color;
+      }
+
+      &.answerbtn,
+      &.callbtn {
+        color: @brand-success;
+      }
+
+      &.holdbtn,
+      &.resumebtn {
+        color: @brand-warning;
+      }
+
+      &.hangupbtn {
+        color: @brand-danger;
       }
     }
   }
@@ -58,44 +71,26 @@ input[type="text"] {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
   padding: 0;
+  font-size: initial;
 
   button {
     border-radius: 50%;
-    height: 27.3vw;
-    width: 27.3vw;
+    height: 26.3vw;
+    width: 26.3vw;
     text-align: center;
     transition: background-color 0.5s ease;
     font-size: 2em;
     box-sizing:border-box;
     padding: 1vw 0 0 0;
-    margin: 2vw;
+    margin: 1.5vw;
     border: 2px solid @brand-success;
     background: transparent;
     cursor:pointer;
 
     &:active {
       background-color: @brand-success;
-    }
-
-    &.answerbtn,
-    &.callbtn {
-      color: @brand-success;
-
-      &:active {
-        color: @text-color;
-      }
-    }
-
-    &.hangupbtn {
-      color: @brand-danger;
-      border-color: @brand-danger;
-
-      &:active {
-        color: @text-color;
-        background-color: @brand-danger;
-      }
     }
 
     div {

@@ -1,17 +1,15 @@
 <div class="container">
   <form id="new_call" ng-submit="startCall()">
-    <div class="row">
+    <div class="row toaddr-input">
       <label for="toaddr" class="sr-only">New call to:</label>
       <input type="text" id="toaddr" ng-model="toaddr" ng-change="toAddrChange()">
+      <button type="submit" class="callbtn"><i class="fa fa-phone"></i></button>
     </div>
-    <div class="row">
-      <div class="col-xs-12 dialpad">
-        <button type="button" class="dialbtn" ng-repeat="dialbtn in dialpad" ng-click="dialToAddr(dialbtn.digit)">
-          <div class="digit">{{ dialbtn.digit }}</div>
-          <div class="letters">&nbsp;{{ dialbtn.letters }}&nbsp;</div>
-        </button>
-        <button type="submit" class="callbtn"><i class="fa fa-phone"></i></button>
-      </div>
+    <div class="dialpad">
+      <button type="button" class="dialbtn" ng-repeat="dialbtn in dialpad" ng-click="dialToAddr(dialbtn.digit)">
+        <div class="digit">{{ dialbtn.digit }}</div>
+        <div class="letters">&nbsp;{{ dialbtn.letters }}&nbsp;</div>
+      </button>
     </div>
   </form>
 </div>
